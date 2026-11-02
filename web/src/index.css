@@ -1,0 +1,70 @@
+/* Global styles that apply to the whole site.
+   Component-specific styles live in *.module.css files next to each component.
+
+   The look is warm minimalism: oat paper with a clay accent in light mode,
+   and "Evening" (espresso, cream and amber) in dark mode. Young Serif is
+   for headings and the name; Figtree is for everything else.
+
+   The site is light by default. Dark mode applies only when the visitor
+   picks it with the theme button, which sets data-theme="dark" on <html>. */
+
+:root {
+  --bg: #f4eee4;
+  --surface: #faf6ef;
+  --text: #2b2420;
+  --text-muted: #6b6057;
+  --border: #e0d5c6;
+  --accent: #c4572f; /* clay: the dot and other small marks */
+  --link: #a4441f; /* a darker clay that stays readable as text */
+  --max-width: 960px;
+  --font-display: 'Young Serif', Georgia, serif;
+  --font-body:
+    'Figtree Variable', system-ui, -apple-system, 'Segoe UI', Roboto,
+    sans-serif;
+
+  font-family: var(--font-body);
+  line-height: 1.6;
+  color: var(--text);
+  background: var(--bg);
+  color-scheme: light;
+}
+
+:root[data-theme='dark'] {
+  --bg: #1f1a17;
+  --surface: #29221e;
+  --text: #f0e6d8;
+  --text-muted: #b3a593;
+  --border: #3a302a;
+  --accent: #e0a458;
+  --link: #e8b06a;
+
+  color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+a {
+  color: var(--link);
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}

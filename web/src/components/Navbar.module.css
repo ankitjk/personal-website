@@ -1,0 +1,79 @@
+.header {
+  border-bottom: 1px solid var(--border);
+}
+
+.nav {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 1.25rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* Your name with the clay dot, matching the home page */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.link {
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.link:hover {
+  color: var(--text);
+}
+
+.active {
+  color: var(--link);
+}
+
+/* Phones: tighter spacing so your name stays on one line. On the narrowest
+   screens the links and theme switch wrap to a second row instead. */
+@media (max-width: 480px) {
+  .nav {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+    padding: 0.9rem 1rem;
+  }
+
+  .brand {
+    font-size: 1rem;
+    white-space: nowrap;
+  }
+
+  .right,
+  .links {
+    gap: 1rem;
+  }
+}

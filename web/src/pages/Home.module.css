@@ -1,0 +1,166 @@
+/* Home page: your name and line low on the left, and a full-height column
+   on the right with its dividing line running top to bottom, the theme
+   switch at the top and the links stacked at the bottom like a table of
+   contents. On phones the links move under the name and the switch sits
+   in the top-right corner. */
+
+.screen {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100dvh;
+  max-width: 76rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 8vw, 7rem);
+  display: grid;
+  grid-template-columns: 1fr minmax(9rem, 13rem);
+  column-gap: clamp(2rem, 6vw, 5rem);
+  align-items: end;
+}
+
+.intro {
+  animation: rise 0.7s ease-out backwards;
+}
+
+.name {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35em;
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.1;
+}
+
+/* Lines up with the middle of the name's first line, even when it wraps */
+.dot {
+  flex: none;
+  width: 0.3em;
+  height: 0.3em;
+  margin-top: 0.4em;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.blurb {
+  max-width: 30rem;
+  margin: 1rem 0 0;
+  color: var(--text-muted);
+  font-size: clamp(1rem, 1.6vw, 1.15rem);
+}
+
+.side {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  padding-left: clamp(1.25rem, 3vw, 2rem);
+  border-left: 1px solid var(--border);
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  animation: rise 0.7s ease-out 0.12s backwards;
+}
+
+.link {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 0.9rem 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    color 0.2s ease,
+    padding-left 0.2s ease;
+}
+
+.link:last-child {
+  border-bottom: 0;
+}
+
+.link:hover,
+.link:focus-visible {
+  padding-left: 0.35rem;
+  color: var(--link);
+}
+
+.link:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.external {
+  font-size: 0.8em;
+  color: var(--text-muted);
+}
+
+/* "Email" and "Copied" stacked in the same spot, so the link doesn't shift
+   when the label swaps */
+.swap {
+  display: inline-grid;
+}
+
+.swap > span {
+  grid-area: 1 / 1;
+  transition: opacity 0.2s ease;
+}
+
+.swap > [data-hidden='true'] {
+  opacity: 0;
+}
+
+/* Read by screen readers, not shown on screen */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .screen {
+    grid-template-columns: 1fr;
+    align-content: end;
+    row-gap: 2.5rem;
+    padding: 2rem 1.25rem 2.5rem;
+  }
+
+  /* The column's wrapper drops out so the links sit in the page's grid */
+  .side {
+    display: contents;
+  }
+
+  .theme {
+    position: absolute;
+    top: 1.25rem;
+    right: 1.25rem;
+  }
+
+  .links {
+    border-top: 1px solid var(--border);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .intro,
+  .links {
+    animation: none;
+  }
+
+  .link,
+  .swap > span {
+    transition: none;
+  }
+}

@@ -1,0 +1,66 @@
+/* Styles shared by all pages */
+
+.heading {
+  font-size: clamp(2rem, 4.5vw, 2.75rem);
+  margin: 1rem 0;
+}
+
+.lead {
+  font-size: 1.15rem;
+  color: var(--text-muted);
+  max-width: 40rem;
+}
+
+.section {
+  margin-top: 2.5rem;
+}
+
+/* Intro block, used by the 404 page */
+.hero {
+  padding: 3rem 0;
+}
+
+/* About page */
+.about {
+  display: grid;
+  grid-template-columns: 200px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .about {
+    grid-template-columns: 1fr;
+  }
+}
+
+.photo {
+  width: 200px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--border);
+}
+
+.skills {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.skills li {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+}
+
+/* Projects page */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}

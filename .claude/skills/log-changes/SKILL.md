@@ -1,0 +1,80 @@
+---
+name: log-changes
+description: Record what changed on the site, and why, as a dated entry in the Changelog of DEVELOPMENT.md, then print a short rundown. Use after finishing a change and before committing it, or when asked to log, document, or write up what was changed.
+---
+
+# /log-changes - Write the session's changes into DEVELOPMENT.md
+
+`DEVELOPMENT.md` at the repo root is the site's running log. Its `## Changelog`
+holds one dated entry per working session, newest first.
+
+The entry must say **why**, not just what. The diff already records what
+changed; the reasons (what looked wrong, what was asked for, what was tried and
+dropped) live only in this conversation and are lost when it ends.
+
+## Usage
+
+```
+/log-changes                 # log uncommitted changes plus this session's commits
+/log-changes <commit-range>  # log a specific range, e.g. main~3..main
+```
+
+## Pick a size
+
+The record should cost about as much as the change did.
+
+| Size | Examples | What to write |
+|------|----------|---------------|
+| **Small** | Copy edit, styling tweak, rename, dependency bump, one-line fix | One bullet under `**Minor:**` in today's entry |
+| **Normal** | New page or component, layout change, build/deploy/config change, a bug fix | Bullets under `**Changes:**`, one per file or purpose, each with what and why |
+
+When unsure, pick Small.
+
+## Instructions
+
+1. **Find what changed.** Use the range if given. Otherwise:
+   ```bash
+   git status --short
+   git diff HEAD --stat   # fails if the repo has no commits yet; use git status then
+   git log --oneline -10
+   ```
+   Read the diffs (or the new files) for anything non-trivial. Do not describe
+   a file you have not looked at. Ignore `web/dist/` and lockfile-only churn
+   unless that was the point.
+
+2. **Find out why.** Take reasons from this conversation and commit message
+   bodies. If a reason is not known, ask; do not invent one.
+
+3. **Reuse today's entry.** If the newest Changelog entry has today's date,
+   add to it rather than starting a second one.
+
+4. **Write the entry** directly under `## Changelog`, above the newest one:
+
+   ```markdown
+   ### <Month D, YYYY> - <Short Title>
+
+   **Changes:**
+   - `path/to/file` - <what changed> - <why>
+
+   **Minor:**
+   - <small change>
+
+   **Left open:**
+   - <anything noticed but deliberately not done>
+   ```
+
+   Include only the sections that have something in them. Group files that
+   changed for one reason into a single bullet.
+
+5. **Keep `## Next Up` honest.** Remove items the work finished. Add anything
+   from **Left open** that should be picked up later.
+
+6. **Update `**Last Updated:**`** at the top of the file.
+
+7. **Print a rundown** in chat: a table of file / what changed / why, then
+   anything left open.
+
+## Notes
+
+- Do not commit. Leave the edit in the working tree so it goes into the same
+  commit as the change it describes.
