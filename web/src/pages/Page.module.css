@@ -21,25 +21,20 @@
 }
 
 /* About page */
+/* Photo stack on the left, bio on the right. The column is a little wider
+   than the stack so the turned photos underneath have room to peek out. */
 .about {
   display: grid;
-  grid-template-columns: 200px 1fr;
-  gap: 2rem;
+  grid-template-columns: 240px 1fr;
+  gap: 2.5rem;
   align-items: start;
 }
 
 @media (max-width: 640px) {
   .about {
     grid-template-columns: 1fr;
+    gap: 2rem;
   }
-}
-
-.photo {
-  width: 200px;
-  aspect-ratio: 1;
-  border-radius: 50%;
-  object-fit: cover;
-  background: var(--border);
 }
 
 .skills {

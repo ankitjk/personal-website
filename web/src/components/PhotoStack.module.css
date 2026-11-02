@@ -1,0 +1,105 @@
+.figure {
+  margin: 0;
+  width: min(220px, 70vw);
+}
+
+/* The stack is one big button. Extra margin leaves room for the turned
+   photos underneath to peek out without touching the text beside it. */
+.stack {
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.stack:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 10px;
+  border-radius: 14px;
+}
+
+/* Each photo is a print: a thin border in the page's card color and a soft
+   shadow so the layers read as separate pieces. */
+.card {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border: 5px solid var(--surface);
+  border-radius: 14px;
+  background: var(--border);
+  box-shadow: 0 6px 18px rgb(43 36 32 / 0.16);
+  transition:
+    transform 0.35s cubic-bezier(0.3, 1.3, 0.5, 1),
+    box-shadow 0.35s ease;
+}
+
+.card[data-depth='0'] {
+  transform: rotate(-1deg);
+}
+
+.card[data-depth='1'] {
+  transform: translate(-5%, 2%) rotate(-7deg);
+}
+
+.card[data-depth='2'] {
+  transform: translate(6%, 3%) rotate(6deg);
+}
+
+/* On hover the top print lifts and the ones underneath fan out a little */
+.stack:hover .card[data-depth='0'] {
+  transform: translateY(-2%) rotate(0deg);
+  box-shadow: 0 12px 28px rgb(43 36 32 / 0.2);
+}
+
+.stack:hover .card[data-depth='1'] {
+  transform: translate(-8%, 2%) rotate(-9deg);
+}
+
+.stack:hover .card[data-depth='2'] {
+  transform: translate(9%, 3%) rotate(8deg);
+}
+
+/* The top photo flicking out to the right before it tucks in at the back */
+.card[data-leaving] {
+  transform: translate(55%, -6%) rotate(12deg) !important;
+  transition: transform 0.22s ease-in;
+}
+
+.count {
+  margin-top: 1.1rem;
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+/* Read by screen readers, not shown on screen */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Phones: centered, so the photos peeking out on the left stay on screen */
+@media (max-width: 640px) {
+  .figure {
+    margin-inline: auto;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

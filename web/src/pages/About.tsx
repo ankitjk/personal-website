@@ -1,3 +1,4 @@
+import PhotoStack from '../components/PhotoStack.tsx'
 import { site } from '../data/site.ts'
 import styles from './Page.module.css'
 
@@ -10,8 +11,7 @@ function About() {
       <title>{`About | ${site.name}`}</title>
       <h1 className={styles.heading}>About Me</h1>
       <div className={styles.about}>
-        {/* TODO: put your photo in web/public/ (e.g. photo.jpg) and update src */}
-        <img src="/photo.svg" alt={site.name} className={styles.photo} />
+        <PhotoStack />
         <div>
           <p>
             Hi! I'm a software engineer working largely on machine learning,
