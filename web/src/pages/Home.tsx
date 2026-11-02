@@ -5,8 +5,8 @@ import { site } from '../data/site.ts'
 import styles from './Home.module.css'
 
 // Links stacked down the right side. Pages on this site use `to`; outside
-// links use `href`. Email comes last and is written out separately, since it
-// also copies the address.
+// links use `href`. Resume and Email come after these and are written out
+// separately, since one downloads a file and the other also copies the address.
 const links = [
   { label: 'About', to: '/about' },
   { label: 'Projects', to: '/projects' },
@@ -69,6 +69,17 @@ function Home() {
               </a>
             ),
           )}
+          {/* Downloads web/public/resume.pdf, saved under a clearer file name */}
+          <a
+            href="/resume.pdf"
+            download={`${site.name} - Resume.pdf`}
+            className={styles.link}
+          >
+            Resume
+            <span className={styles.external} aria-hidden="true">
+              ↓
+            </span>
+          </a>
           <a
             href={`mailto:${site.email}`}
             className={styles.link}

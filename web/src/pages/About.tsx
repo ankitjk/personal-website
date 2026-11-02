@@ -30,7 +30,6 @@ function About() {
             If you're interested in my work, or just want to chat, reach out to
             me at <a href={`mailto:${site.email}`}>{site.email}</a>!
           </p>
-          {/* TODO: add your resume as web/public/resume.pdf */}
           <p>
             <a href="/resume.pdf" target="_blank" rel="noreferrer">
               View my resume

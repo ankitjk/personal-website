@@ -9,8 +9,8 @@ with `/log-changes` after finishing a change, before committing.
 
 ## Next Up
 
-- Replace the `TODO` placeholders in `web/src/data/site.ts` and `web/src/data/projects.ts` (name, email, GitHub/LinkedIn links, real projects)
-- Add `resume.pdf` to `web/public/` (the "View my resume" link on the About page goes nowhere until then)
+- Replace the "Example Project" in `web/src/data/projects.ts` with real projects (RunItBack, GenModel), and drop "hosted on AWS" from this site's card until it is
+- Replace the starter skills list on the About page with real skills
 - Host on AWS (S3 + CloudFront) and point ankitjk.com at it
 
 ---
@@ -32,6 +32,7 @@ The black-and-glass look felt cool and distant; the goal now is warm, friendly a
 - `web/src/pages/Home.tsx`, `web/src/pages/Home.module.css` - the links column now runs the full height of the screen, with the theme switch at the top and the links at the bottom, because the short column left the top of the page looking unused. Links are spaced slightly further apart. On phones the switch sits in the top-right corner.
 - `web/src/components/PhotoStack.tsx`, `web/src/components/PhotoStack.module.css`, `web/src/data/photos.ts`, `web/src/assets/photos/`, `web/src/pages/About.tsx`, `web/src/pages/Page.module.css` - the About page's placeholder circle is replaced by a stack of three square photos (Memorial Union Terrace, a Smash tournament, a Pokémon TCG win), laid like prints with the ones underneath turned so their edges peek out. Tapping or clicking flicks the top photo out and tucks it in at the back; a small "1 / 3" counter underneath shows there's more (captions were tried and removed). Hovering lifts the top photo and fans the others. On phones the stack is centered so the peeking photos stay on screen. A sideways-scrolling "Life outside work" strip of the same photos was built first, but showing them twice was redundant, so the stack replaced it. Photos were resized to 800px and converted to WebP with all metadata removed (iPhone photos carry the date, phone model and possibly location, and the repo and site are public), about 55-95 KB each.
 - `web/public/photo.svg` - deleted; the placeholder photo is no longer used.
+- `web/public/resume.pdf`, `web/src/pages/Home.tsx` - added the resume and a "Resume ↓" link in the home page sidebar, between GitHub and Email, which downloads it as "Ankit Kulshrestha - Resume.pdf". A separate button under the name was considered but would compete with the name; as a sidebar item it's one click away and matches the other links. The About page's "View my resume" link now works too. This copy of the resume leaves out the phone number, since anything pushed to the public repo stays in its history.
 - `web/src/components/Navbar.tsx`, `web/src/components/Navbar.module.css` - theme switch added next to About and Projects. On phones the spacing tightens so the name stays on one line; at 360px and below the links and switch wrap to a second row.
 
 **Minor:**
