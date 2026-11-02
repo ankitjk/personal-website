@@ -9,9 +9,7 @@ with `/log-changes` after finishing a change, before committing.
 
 ## Next Up
 
-- Replace the "Example Project" in `web/src/data/projects.ts` with real projects (RunItBack, GenModel), and drop "hosted on AWS" from this site's card until it is
-- Replace the starter skills list on the About page with real skills
-- Host on AWS (S3 + CloudFront) and point ankitjk.com at it
+- Replace the "Example Project" in `web/src/data/projects.ts` with real projects (RunItBack, GenModel), and drop "hosted on AWS" from this site's card until it is- Host on AWS (S3 + CloudFront) and point ankitjk.com at it
 
 ---
 
@@ -41,6 +39,7 @@ The black-and-glass look felt cool and distant; the goal now is warm, friendly a
 - `web/src/data/site.ts` - LinkedIn link and email address set to the real ones (were placeholders), so every link in site.ts now works. Dropped the file's note about TODO placeholders since none are left.
 - `web/src/pages/About.tsx` - real bio replaces the placeholder text: work focus, UW-Madison, and life outside work, with RunItBack as the bridge between computer vision and competitive Smash. The "reach out" line with the email is kept as its own paragraph.
 - `web/src/pages/About.tsx` - "View my resume" link now reads "View my resume!".
+- `web/src/pages/About.tsx`, `web/src/pages/Page.module.css` - the starter skills list is replaced by the resume's Technical Skills, under a "Skills and Tech Stack" heading. Skills are grouped as on the resume (Languages, Developer Tools, Libraries, Other), each group's name beside its tags, or above them on phones.
 
 **Results:**
 - Build and lint pass. Checked in headless Chrome in light and dark mode at desktop and phone widths, and clicking Email still copies the address and shows "Copied".

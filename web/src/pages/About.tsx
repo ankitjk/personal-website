@@ -2,8 +2,46 @@ import PhotoStack from '../components/PhotoStack.tsx'
 import { site } from '../data/site.ts'
 import styles from './Page.module.css'
 
-// TODO: replace with your own skills
-const skills = ['TypeScript', 'React', 'Node.js', 'AWS', 'Python']
+// Grouped the same way as the Technical Skills section of the resume
+const skillGroups = [
+  {
+    label: 'Languages',
+    skills: [
+      'Python',
+      'C#',
+      'C',
+      'Swift',
+      'Java',
+      'SQL',
+      'R',
+      'HTML',
+      'CSS',
+      'JavaScript',
+    ],
+  },
+  {
+    label: 'Developer Tools',
+    skills: ['Git', 'Docker', 'Unity', 'AWS', 'Xcode', 'pytest', 'VS Code'],
+  },
+  {
+    label: 'Libraries',
+    skills: [
+      'PyTorch',
+      'OpenCV',
+      'pandas',
+      'NumPy',
+      'Flask',
+      'React',
+      'SQLAlchemy',
+      'Matplotlib',
+      'PaddleOCR',
+    ],
+  },
+  {
+    label: 'Other',
+    skills: ['Generative AI/LLMs', 'Prompt Engineering'],
+  },
+]
 
 function About() {
   return (
@@ -39,12 +77,19 @@ function About() {
       </div>
 
       <section className={styles.section}>
-        <h2>Skills</h2>
-        <ul className={styles.skills}>
-          {skills.map((skill) => (
-            <li key={skill}>{skill}</li>
+        <h2>Skills and Tech Stack</h2>
+        <div className={styles.skillGroups}>
+          {skillGroups.map((group) => (
+            <div key={group.label} className={styles.skillGroup}>
+              <h3 className={styles.skillLabel}>{group.label}</h3>
+              <ul className={styles.skills}>
+                {group.skills.map((skill) => (
+                  <li key={skill}>{skill}</li>
+                ))}
+              </ul>
+            </div>
           ))}
-        </ul>
+        </div>
       </section>
     </>
   )

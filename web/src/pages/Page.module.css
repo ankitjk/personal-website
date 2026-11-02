@@ -37,8 +37,39 @@
   }
 }
 
+/* Skills: one row per group, with the group name beside its tags.
+   On phones the name sits above the tags instead. */
+.skillGroups {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.skillGroup {
+  display: grid;
+  grid-template-columns: 9rem 1fr;
+  gap: 0.5rem 1.5rem;
+  align-items: baseline;
+}
+
+/* A small plain label rather than a serif heading, so it doesn't compete
+   with the section title */
+.skillLabel {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+@media (max-width: 640px) {
+  .skillGroup {
+    grid-template-columns: 1fr;
+  }
+}
+
 .skills {
   list-style: none;
+  margin: 0;
   padding: 0;
   display: flex;
   flex-wrap: wrap;
