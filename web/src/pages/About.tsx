@@ -13,14 +13,22 @@ function About() {
         {/* TODO: put your photo in web/public/ (e.g. photo.jpg) and update src */}
         <img src="/photo.svg" alt={site.name} className={styles.photo} />
         <div>
-          {/* TODO: write your bio */}
           <p>
-            I'm a developer based in [your city]. I enjoy [what you like
-            working on], and I'm currently [what you're doing now].
+            Hi! I'm a software engineer working largely on machine learning,
+            backend development, data analytics, computer vision, and augmented
+            reality. I studied Computer Science and Data Science at the
+            University of Wisconsin-Madison.
           </p>
           <p>
-            Outside of coding, I like [hobbies]. Feel free to reach out at{' '}
-            <a href={`mailto:${site.email}`}>{site.email}</a>.
+            Outside of building software, I play Super Smash Bros. Ultimate
+            competitively, which is how I ended up building RunItBack, a
+            computer vision tool that analyzes Smash replays and shows the user
+            key game events and when they happened. I also enjoy playing and
+            watching basketball, soccer, and the Pokémon Trading Card Game.
+          </p>
+          <p>
+            If you're interested in my work, or just want to chat, reach out to
+            me at <a href={`mailto:${site.email}`}>{site.email}</a>!
           </p>
           {/* TODO: add your resume as web/public/resume.pdf */}
           <p>

@@ -36,6 +36,7 @@ The black-and-glass look felt cool and distant; the goal now is warm, friendly a
 - `web/index.html` - page title and description use the full name.
 - `web/src/data/site.ts`, `web/src/data/projects.ts` - GitHub profile link and this site's Code link now point to the real github.com/ankitjk and the new public repo, instead of placeholders.
 - `web/src/data/site.ts` - LinkedIn link and email address set to the real ones (were placeholders), so every link in site.ts now works. Dropped the file's note about TODO placeholders since none are left.
+- `web/src/pages/About.tsx` - real bio replaces the placeholder text: work focus, UW-Madison, and life outside work, with RunItBack as the bridge between computer vision and competitive Smash. The "reach out" line with the email is kept as its own paragraph.
 
 **Results:**
 - Build and lint pass. Checked in headless Chrome in light and dark mode at desktop and phone widths, and clicking Email still copies the address and shows "Copied".
