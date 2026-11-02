@@ -8,7 +8,7 @@ export const site = {
     'Designing and building software and machine learning systems. Way better at Super Smash Bros. Ultimate than I should be.',
   email: 'you@example.com', // TODO
   links: {
-    github: 'https://github.com/your-username', // TODO
+    github: 'https://github.com/ankitjk',
     linkedin: 'https://www.linkedin.com/in/your-username', // TODO
   },
 }

@@ -16,7 +16,7 @@ export const projects: Project[] = [
     description:
       'This site! Built with React and TypeScript, hosted on AWS with S3 and CloudFront.',
     tech: ['React', 'TypeScript', 'AWS'],
-    repoUrl: 'https://github.com/your-username/personal-website', // TODO
+    repoUrl: 'https://github.com/ankitjk/personal-website',
   },
   {
     title: 'Example Project', // TODO: replace with a real project

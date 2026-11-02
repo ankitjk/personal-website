@@ -34,6 +34,7 @@ The black-and-glass look felt cool and distant; the goal now is warm, friendly a
 
 **Minor:**
 - `web/index.html` - page title and description use the full name.
+- `web/src/data/site.ts`, `web/src/data/projects.ts` - GitHub profile link and this site's Code link now point to the real github.com/ankitjk and the new public repo, instead of placeholders.
 
 **Results:**
 - Build and lint pass. Checked in headless Chrome in light and dark mode at desktop and phone widths, and clicking Email still copies the address and shows "Copied".
