@@ -32,7 +32,7 @@ function About() {
           </p>
           <p>
             <a href="/resume.pdf" target="_blank" rel="noreferrer">
-              View my resume
+              View my resume!
             </a>
           </p>
         </div>
