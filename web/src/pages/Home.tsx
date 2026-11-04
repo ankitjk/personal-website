@@ -14,6 +14,13 @@ const links = [
   { label: 'GitHub', href: site.links.github },
 ]
 
+// Shown under the page's title in search results. A draft for Ankit to
+// rewrite in his own words.
+const description =
+  "Hi, I'm Ankit! I design and build software and machine learning " +
+  "systems, and I'm way better at Super Smash Bros. Ultimate than I " +
+  'should be.'
+
 function Home() {
   // True for a couple of seconds after the email address is copied
   const [copied, setCopied] = useState(false)
@@ -36,6 +43,7 @@ function Home() {
   return (
     <main className={styles.screen}>
       <title>{site.name}</title>
+      <meta name="description" content={description} />
       <div className={styles.intro}>
         <h1 className={styles.name}>
           <span className={styles.dot} aria-hidden="true" />
