@@ -16,10 +16,14 @@ with `/log-changes` after finishing a change, before committing.
 
 ## Changelog
 
-### November 4, 2026 - README Update
+### November 4, 2026 - README Update, robots.txt and Agent Definitions
+
+**Changes:**
+- `.claude/agents/builder.md`, `.claude/agents/reviewer.md`, `.claude/agents/site-checker.md`, `CLAUDE.md` - three reusable agents, so each brief no longer has to repeat the same instructions. The builder turns one task into one pull request in its own worktree. The reviewer and site-checker are read-only, so checking stays separate from building: the reviewer judges a pull request against its task and CLAUDE.md and is given the change, not the builder's reasoning, so it doesn't just agree with it; the site-checker carries the browser rules worked out so far (light and dark, desktop and phone, never click mailto links, Lighthouse on a production build). Chosen over agents that message each other (backend, frontend, testing, QA): the site is small and static with no backend, its tasks are independent, and each extra hand-off costs tokens and loses detail. Worth revisiting if the site gains a backend. CLAUDE.md lists the three and when each runs.
 
 **Minor:**
 - `README.md` - brought up to date with the site, since it still described the starter project: photos are now listed as living in `web/src/assets/photos/` (via `web/src/data/photos.ts`) rather than `web/public/`, the project write-ups in `projects.ts` are explained (`why`/`what`/`how` paragraphs, `[text](url)` links, `tags` on the card versus `tech` on the project's page), it says plainly that the site isn't online yet, and a new "Making changes" section says every change goes through a pull request only Ankit merges, pointing to CLAUDE.md for the details.
+- `web/public/robots.txt` - added, allowing search engines to read the whole site. A Lighthouse audit (all pages 100 for performance, accessibility and best practices, in light and dark mode) found it was the only failure: without the file, asking for `/robots.txt` returned the site's own page, which search engines can't read, costing the SEO score (91-92). The audit's other suggestions (smaller About photos, per-page descriptions, a softer home page fade-in) were left for later.
 
 ### November 3, 2026 - Project Pages and Write-Ups
 
