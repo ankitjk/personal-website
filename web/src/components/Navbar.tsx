@@ -21,10 +21,10 @@ function Navbar() {
           <ul className={styles.links}>
             {navItems.map((item) => (
               <li key={item.to}>
-                {/* NavLink knows when its page is open, so we can highlight it */}
+                {/* NavLink knows when its page is open, so we can highlight
+                    it. Projects stays highlighted on each project's page. */}
                 <NavLink
                   to={item.to}
-                  end
                   className={({ isActive }) =>
                     isActive ? `${styles.link} ${styles.active}` : styles.link
                   }

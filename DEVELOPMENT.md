@@ -3,17 +3,38 @@
 A running record of what changed on the site and why, newest first. Add to it
 with `/log-changes` after finishing a change, before committing.
 
-**Last Updated:** November 2, 2026
+**Last Updated:** November 3, 2026
 
 ---
 
 ## Next Up
 
-- Replace the "Example Project" in `web/src/data/projects.ts` with real projects (RunItBack, GenModel), and drop "hosted on AWS" from this site's card until it is- Host on AWS (S3 + CloudFront) and point ankitjk.com at it
+- Add a screenshot or GIF to each project (`imageUrl`), especially GenModel and Space Runner
+- Host on AWS (S3 + CloudFront) and point ankitjk.com at it
 
 ---
 
 ## Changelog
+
+### November 3, 2026 - Project Pages and Write-Ups
+
+Modeled loosely on the project write-ups at rohanjk.xyz, but kept short for now: each project gets three sections, why I built it, what it does, and how I made it. RunItBack and GenModel may get longer write-ups later, so each project has its own page from the start and its address won't change when that happens.
+
+**Changes:**
+- `web/src/data/projects.ts` - the "Example Project" placeholder is replaced by RunItBack, GenModel, Space Runner and this site, in that order. Each project now has a `slug` (its page address) and its write-up as `why`, `what` and `how`, one string per paragraph. The "What it does" and "How I made it" drafts come from each project's code and README (and RunItBack's own development log and the resume); the "Why I built it" sections are left empty to be written in my own words. This site's description no longer says it's hosted on AWS, since it isn't yet.
+- `web/src/pages/Project.tsx`, `web/src/App.tsx`, `web/src/pages/Page.module.css` - new page for each project at `/projects/<slug>`: a link back to all projects, the title, description, tech tags and a "View code" link, then the three sections at a comfortable reading width. An empty section shows "Coming soon." At the bottom, a "Next project" link moves through the projects in order, wrapping from the last back to the first. An unknown project address shows the "Page not found" page.
+- `web/src/components/ProjectCard.tsx`, `web/src/components/ProjectCard.module.css` - the whole card now opens the project's page (the title's link is stretched over the card, so it's one link rather than several), with a "Read more →" hint and a slight lift and clay border on hover. The card's Code and Live links moved to the project page, since links can't sit inside another link.
+- `web/src/components/Navbar.tsx` - Projects in the navbar stays highlighted on each project's page, not just on `/projects` itself.
+
+**Minor:**
+- `web/src/data/projects.ts` - RunItBack's "Why I built it" section written: competing in Smash, and wanting to cut down the time spent reviewing replays at quarter speed.
+- `web/src/data/projects.ts` - GenModel's "Why I built it" section written: users of Holos' Learn in 3D app had to hunt for or commission niche 3D models, so GenModel lets them generate one instead.
+- `web/src/data/projects.ts` - Space Runner's "Why I built it" section written: a small 3D take on Flappy Bird to learn Unity, with a Star Wars theme.
+- `web/src/data/projects.ts` - this site's "Why I built it" section written: a place to share more about myself, my hobbies and my projects, not just my career like LinkedIn.
+- `web/src/pages/Project.tsx`, `web/src/data/projects.ts` - write-up paragraphs can now include links, written `[text](url)` as in Markdown, and open in a new tab. Used to link Learn in 3D to its product page.
+
+**Results:**
+- Build and lint pass. Checked in headless Chrome in light mode at desktop and phone widths, and `/projects/nope` shows "Page not found".
 
 ### November 2, 2026 - Warm Minimalism Overhaul
 
