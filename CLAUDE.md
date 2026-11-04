@@ -61,6 +61,19 @@ A change is done when `build` and `lint` both pass.
 - Check desktop and phone widths, in light and dark mode.
 - Never click `mailto:` links in automated tests; it opens Ankit's mail app.
 
+## Agents
+
+Three agents are defined in `.claude/agents/`, each with one job:
+
+- **builder** - turns one task into one pull request, in its own worktree.
+- **reviewer** - reviews a pull request against the task and this file.
+  Read-only; it's given the change, not the builder's reasoning.
+- **site-checker** - checks pages in a browser (light/dark, desktop/phone)
+  and runs Lighthouse when asked. Read-only.
+
+Any change goes builder, then reviewer (plus site-checker if it's visible),
+then Ankit. Text-only changes can skip the reviewer.
+
 ## Git
 
 - One feature per commit. Before committing, add the change to
