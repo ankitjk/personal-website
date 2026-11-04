@@ -1,3 +1,6 @@
+// vite.config.ts also reads this file, so it runs in Node during the build
+// and can't import images or CSS.
+//
 // Your personal info lives here so you only need to edit one place.
 
 export const site = {

@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router'
 import { projects } from '../data/projects.ts'
-import { site } from '../data/site.ts'
+import { projectPage } from '../data/pages.ts'
 import NotFound from './NotFound.tsx'
 import styles from './Page.module.css'
 
@@ -32,14 +32,15 @@ function Project() {
   if (index === -1) return <NotFound />
 
   const project = projects[index]
+  const page = projectPage(project)
   // The last project's "Next" link wraps around to the first
   const next = projects[(index + 1) % projects.length]
 
   return (
     <article className={styles.writeup}>
-      <title>{`${project.title} | ${site.name}`}</title>
+      <title>{page.title}</title>
       {/* Search results show the same one-line summary as the card */}
-      <meta name="description" content={project.description} />
+      <meta name="description" content={page.description} />
       <Link to="/projects" className={styles.back}>
         ← All projects
       </Link>

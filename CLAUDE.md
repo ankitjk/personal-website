@@ -24,13 +24,16 @@ A change is done when `build` and `lint` both pass.
 - `web/src/data/site.ts` - name, tagline, email, links
 - `web/src/data/projects.ts` - projects and their write-ups (`tags` show on
   the card, `tech` is the rest of the stack, shown on the project's page)
+- `web/src/data/pages.ts` - each page's title and description, used by the
+  pages and written into each page's HTML file by the build
 - `web/src/data/photos.ts`, `web/src/assets/photos/` - About page photos
 - `web/src/index.css` - colors and fonts as CSS variables, light and dark
 - `web/public/` - files served as-is (`resume.pdf`, icons)
-- `infra/` - AWS hosting (S3 + CloudFront) as a CloudFormation template;
-  its README covers deploying it
-- `.github/workflows/` - GitHub Actions; `deploy.yml` publishes the site
-  on every push to `main`
+- `web/vite.config.ts` - also writes a copy of `index.html` for each page
+  (`about.html`, `projects/<slug>.html`, `404.html`...), since GitHub Pages
+  only serves files that exist
+- `.github/workflows/pages.yml` - GitHub Actions; publishes the site to
+  GitHub Pages (https://ankitjk.com) on every push to `main`
 
 ## Code conventions
 

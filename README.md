@@ -1,9 +1,9 @@
 # personal-website
 
 Source for Ankit Kulshrestha's personal website, built with React + TypeScript
-(Vite). It's live at https://d3um1rwtt4xdwd.cloudfront.net (no domain yet),
-hosted on AWS with S3 and CloudFront. Every merge into `main` publishes it
-automatically; [infra/README.md](infra/README.md) explains the AWS setup.
+(Vite). It's live at https://ankitjk.com, hosted on GitHub Pages. Every merge
+into `main` publishes it automatically through
+[.github/workflows/pages.yml](.github/workflows/pages.yml).
 
 ## Run locally
 
@@ -18,6 +18,8 @@ npm run dev     # then open http://localhost:5173
 - `web/src/data/projects.ts`: the projects, in the order they're shown, and
   their write-ups
 - `web/src/pages/About.tsx`: bio and skills
+- `web/src/data/pages.ts`: each page's title and description, for the
+  browser tab, search results and link previews
 - `web/src/data/photos.ts`: the About page photos, which live in
   `web/src/assets/photos/`
 - `web/public/`: files served as-is, like `resume.pdf` and the icons

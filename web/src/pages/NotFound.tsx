@@ -1,12 +1,12 @@
 import { Link } from 'react-router'
-import { site } from '../data/site.ts'
+import { pages } from '../data/pages.ts'
 import styles from './Page.module.css'
 
 function NotFound() {
   return (
     <section className={styles.hero}>
-      <title>{`Page not found | ${site.name}`}</title>
-      <meta name="description" content="That page doesn't exist." />
+      <title>{pages.notFound.title}</title>
+      <meta name="description" content={pages.notFound.description} />
       <h1 className={styles.heading}>Page not found</h1>
       <p className={styles.lead}>That page doesn't exist.</p>
       <p>

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import ThemeToggle from '../components/ThemeToggle.tsx'
+import { pages } from '../data/pages.ts'
 import { site } from '../data/site.ts'
 import styles from './Home.module.css'
 
@@ -13,13 +14,6 @@ const links = [
   { label: 'LinkedIn', href: site.links.linkedin },
   { label: 'GitHub', href: site.links.github },
 ]
-
-// Shown under the page's title in search results. A draft for Ankit to
-// rewrite in his own words.
-const description =
-  "Hi, I'm Ankit! I design and build software and machine learning " +
-  "systems, and I'm way better at Super Smash Bros. Ultimate than I " +
-  'should be.'
 
 function Home() {
   // True for a couple of seconds after the email address is copied
@@ -42,8 +36,8 @@ function Home() {
 
   return (
     <main className={styles.screen}>
-      <title>{site.name}</title>
-      <meta name="description" content={description} />
+      <title>{pages.home.title}</title>
+      <meta name="description" content={pages.home.description} />
       <div className={styles.intro}>
         <h1 className={styles.name}>
           <span className={styles.dot} aria-hidden="true" />

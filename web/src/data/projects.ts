@@ -1,3 +1,10 @@
+// vite.config.ts also reads this file (to write a page file for each
+// project), so it runs in Node during the build and can't import images or
+// CSS. Put a project's screenshot in web/public/ instead, e.g.
+// web/public/projects/<slug>.webp, and set
+// imageUrl: '/projects/<slug>.webp'. Strip its metadata first with
+// `cwebp -metadata none` (see CLAUDE.md).
+//
 // To add a project, copy one of the objects below and edit it.
 // TypeScript will underline anything that doesn't match the `Project` shape.
 // Projects show on the Projects page in this order.
@@ -91,14 +98,7 @@ export const projects: Project[] = [
     description:
       "This site! A warm, minimal home for who I am, what I've built and how to reach me.",
     tags: ['Web Development', 'TypeScript', 'React'],
-    tech: [
-      'Vite',
-      'CSS',
-      'AWS S3',
-      'CloudFront',
-      'CloudFormation',
-      'GitHub Actions',
-    ],
+    tech: ['Vite', 'CSS', 'GitHub Pages', 'GitHub Actions'],
     repoUrl: 'https://github.com/ankitjk/personal-website',
     why: [
       "I wanted a place to share more about myself, my hobbies and my projects: something that's holistically about me, not just my career like LinkedIn.",
@@ -109,7 +109,7 @@ export const projects: Project[] = [
     how: [
       "It's built with React, TypeScript and Vite. It took three designs to get here: first a home page modeled on a video game menu, then a minimal black page with Apple-style frosted glass. The black glass felt cold, so I compared about a dozen warmer styles side by side and landed on this one: oat and clay colors, a serif for headings, and the links running down the side of the home page.",
       'Some details I cared about: the site starts in light mode and remembers if you switch, without flashing the wrong colors when the page loads. The photos on the About page had their location and camera details removed before going online, and the resume here leaves out my phone number.',
-      "I built it with Claude Code, keeping a development log of every change and why it was made. It's hosted on AWS: S3 holds the files and CloudFront serves them, all set up with CloudFormation, and every change I merge on GitHub goes live on its own through GitHub Actions.",
+      "I built it with Claude Code, keeping a development log of every change and why it was made. It's hosted on GitHub Pages, and every change I merge on GitHub goes live on its own through GitHub Actions.",
     ],
   },
 ]

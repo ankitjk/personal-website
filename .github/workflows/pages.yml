@@ -1,0 +1,56 @@
+# Builds the site and publishes it to GitHub Pages on every push to main.
+# It can also be started by hand from the Actions tab (workflow_dispatch).
+# The repo's Settings -> Pages has its source set to "GitHub Actions", and
+# the custom domain (ankitjk.com) is set there too.
+name: Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# pages and id-token let the deploy job publish to GitHub Pages, proving
+# it's this repo with a short-lived token instead of a stored key
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one deploy at a time. A newer push waits for the running deploy to
+# finish instead of cancelling it halfway through.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      # The repo doesn't pin a Node version, so use the current LTS
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - uses: actions/configure-pages@v6
+
+      # Packs up web/dist for the deploy job
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: web/dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # Shows the live address on the run's page and in the repo's sidebar
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
