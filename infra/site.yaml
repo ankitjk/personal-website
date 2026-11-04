@@ -1,0 +1,322 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  ankitjk.com - a private S3 bucket served through CloudFront, its HTTPS
+  certificate, a role GitHub Actions uses to deploy, and a monthly cost
+  budget. See infra/README.md for how to deploy it.
+
+Parameters:
+  DomainName:
+    Type: String
+    Default: ankitjk.com
+    Description: The site's main address. www.<DomainName> redirects to it.
+  AlertEmail:
+    Type: String
+    # No default on purpose: the address is given when deploying, so it
+    # never ends up in this public repo.
+    Description: Email address that gets the monthly budget alerts.
+    AllowedPattern: '^[^@\s]+@[^@\s]+\.[^@\s]+$'
+    ConstraintDescription: Must be an email address.
+  MonthlyBudgetUsd:
+    Type: Number
+    Default: 5
+    MinValue: 1
+    Description: Monthly AWS spend (in US dollars) that triggers alerts.
+  GitHubRepo:
+    Type: String
+    Default: ankitjk/personal-website
+    Description: The only GitHub repo (owner/name) allowed to deploy.
+
+Rules:
+  # CloudFront only accepts certificates made in us-east-1, so the whole
+  # stack lives there.
+  OnlyInUsEast1:
+    Assertions:
+      - Assert: !Equals [!Ref 'AWS::Region', us-east-1]
+        AssertDescription: Deploy this stack in us-east-1.
+
+Resources:
+  # ---- Where the built site lives ----------------------------------------
+
+  # Private bucket holding web/dist. Nobody can read it directly; only the
+  # CloudFront distribution below can, through the bucket policy.
+  SiteBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+
+  # Lets this one distribution (and nothing else) read files from the
+  # bucket. CloudFront signs its requests using the Origin Access Control.
+  SiteBucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SiteBucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowCloudFrontRead
+            Effect: Allow
+            Principal:
+              Service: cloudfront.amazonaws.com
+            Action: s3:GetObject
+            Resource: !Sub '${SiteBucket.Arn}/*'
+            Condition:
+              StringEquals:
+                AWS:SourceArn: !Join
+                  - ''
+                  - - !Sub 'arn:${AWS::Partition}:cloudfront::'
+                    - !Ref 'AWS::AccountId'
+                    - !Sub ':distribution/${Distribution}'
+
+  # ---- HTTPS and the CDN -------------------------------------------------
+
+  # Certificate for both addresses. There's no Route 53 here (DNS stays at
+  # Porkbun), so stack creation waits until the validation CNAME records
+  # are added at Porkbun by hand. infra/README.md says where to find them.
+  Certificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      DomainName: !Ref DomainName
+      SubjectAlternativeNames:
+        - !Sub 'www.${DomainName}'
+      ValidationMethod: DNS
+
+  OriginAccessControl:
+    Type: AWS::CloudFront::OriginAccessControl
+    Properties:
+      OriginAccessControlConfig:
+        Name: !Sub '${AWS::StackName}-site-bucket'
+        Description: CloudFront signs its requests to the site bucket.
+        OriginAccessControlOriginType: s3
+        SigningBehavior: always
+        SigningProtocol: sigv4
+
+  # Runs on every request before the cache is checked:
+  # - www.<domain> gets a permanent redirect to https://<domain>, keeping
+  #   the path and query string.
+  # - A path whose last part has no file extension (/about,
+  #   /projects/genmodel) is a page of the React app, so it's served
+  #   index.html and react-router picks the page from the address.
+  # Files with an extension (/assets/index-abc.js, /resume.pdf) pass
+  # through unchanged; if one doesn't exist, the 404 handling in the
+  # distribution below takes over.
+  ViewerRequestFunction:
+    Type: AWS::CloudFront::Function
+    Properties:
+      Name: !Sub '${AWS::StackName}-viewer-request'
+      AutoPublish: true
+      FunctionConfig:
+        Comment: Redirect www to the main domain; serve index.html for pages
+        Runtime: cloudfront-js-2.0
+      FunctionCode: !Sub |
+        var MAIN_HOST = '${DomainName}'
+        var WWW_HOST = 'www.${DomainName}'
+
+        // Rebuilds "?a=1&b=2" from CloudFront's query string object
+        function queryString(querystring) {
+          var parts = []
+          for (var key in querystring) {
+            var param = querystring[key]
+            var values = param.multiValue ? param.multiValue : [param]
+            for (var i = 0; i < values.length; i++) {
+              var value = values[i].value
+              parts.push(value === '' ? key : key + '=' + value)
+            }
+          }
+          return parts.length > 0 ? '?' + parts.join('&') : ''
+        }
+
+        function handler(event) {
+          var request = event.request
+          var host = request.headers.host
+            ? request.headers.host.value.toLowerCase()
+            : ''
+
+          if (host === WWW_HOST) {
+            var location = 'https://' + MAIN_HOST + request.uri +
+              queryString(request.querystring)
+            return {
+              statusCode: 301,
+              statusDescription: 'Moved Permanently',
+              headers: { location: { value: location } }
+            }
+          }
+
+          var lastPart = request.uri.split('/').pop()
+          if (lastPart.indexOf('.') === -1) {
+            request.uri = '/index.html'
+          }
+          return request
+        }
+
+  Distribution:
+    Type: AWS::CloudFront::Distribution
+    Properties:
+      DistributionConfig:
+        Enabled: true
+        Comment: !Ref DomainName
+        Aliases:
+          - !Ref DomainName
+          - !Sub 'www.${DomainName}'
+        DefaultRootObject: index.html
+        HttpVersion: http2and3
+        IPV6Enabled: true
+        # North America and Europe edge locations only: the cheapest tier
+        PriceClass: PriceClass_100
+        ViewerCertificate:
+          AcmCertificateArn: !Ref Certificate
+          SslSupportMethod: sni-only
+          MinimumProtocolVersion: TLSv1.2_2021
+        Origins:
+          - Id: site-bucket
+            DomainName: !GetAtt SiteBucket.RegionalDomainName
+            OriginAccessControlId: !GetAtt OriginAccessControl.Id
+            S3OriginConfig:
+              # Must be empty when using an Origin Access Control
+              OriginAccessIdentity: ''
+        DefaultCacheBehavior:
+          TargetOriginId: site-bucket
+          ViewerProtocolPolicy: redirect-to-https
+          AllowedMethods: [GET, HEAD]
+          CachedMethods: [GET, HEAD]
+          Compress: true
+          # AWS's managed "CachingOptimized" cache policy. It follows the
+          # Cache-Control headers the deploy workflow sets on each file.
+          CachePolicyId: 658327ea-f89d-4fab-a63d-7e88639e58f6
+          # AWS's managed "SecurityHeadersPolicy": HSTS, nosniff,
+          # frame-options and referrer-policy. No Content-Security-Policy,
+          # since a strict one would block the inline theme script in
+          # index.html.
+          ResponseHeadersPolicyId: 67f7725c-6f97-4210-82d7-5512b31e9d03
+          FunctionAssociations:
+            - EventType: viewer-request
+              FunctionARN: !GetAtt ViewerRequestFunction.FunctionARN
+        # A missing file comes back from S3 as 403 (CloudFront isn't allowed
+        # to list the bucket) or 404. Either way, answer with a real 404
+        # whose body is the app, which shows its "Page not found" page.
+        CustomErrorResponses:
+          - ErrorCode: 403
+            ResponseCode: 404
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 10
+          - ErrorCode: 404
+            ResponseCode: 404
+            ResponsePagePath: /index.html
+            ErrorCachingMinTTL: 10
+
+  # ---- Deploying from GitHub Actions -------------------------------------
+
+  # Lets GitHub Actions sign in to this account with short-lived tokens
+  # instead of stored keys. An account can only have one provider for this
+  # URL, so a second stack would have to reuse this one.
+  GitHubOidcProvider:
+    Type: AWS::IAM::OIDCProvider
+    Properties:
+      Url: https://token.actions.githubusercontent.com
+      ClientIdList:
+        - sts.amazonaws.com
+      # AWS no longer checks these for GitHub, but older accounts and tools
+      # expect them to be present.
+      ThumbprintList:
+        - 6938fd4d98bab03faadb97b34396831e3780aea1
+        - 1c58a3a8518e8759bf075b76b750d4f2df264fcd
+
+  # The role the deploy workflow takes on. Only workflow runs on the main
+  # branch of GitHubRepo can use it, and it can only upload to the bucket
+  # and clear the CloudFront cache.
+  DeployRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub '${AWS::StackName}-github-deploy'
+      Description: Used by .github/workflows/deploy.yml to publish the site.
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Federated: !Ref GitHubOidcProvider
+            Action: sts:AssumeRoleWithWebIdentity
+            Condition:
+              StringEquals:
+                token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                token.actions.githubusercontent.com:sub: !Sub >-
+                  repo:${GitHubRepo}:ref:refs/heads/main
+      Policies:
+        - PolicyName: deploy-site
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Sid: ListBucket
+                Effect: Allow
+                Action: s3:ListBucket
+                Resource: !GetAtt SiteBucket.Arn
+              - Sid: WriteFiles
+                Effect: Allow
+                Action:
+                  - s3:PutObject
+                  - s3:DeleteObject
+                Resource: !Sub '${SiteBucket.Arn}/*'
+              - Sid: ClearCache
+                Effect: Allow
+                Action: cloudfront:CreateInvalidation
+                Resource: !Join
+                  - ''
+                  - - !Sub 'arn:${AWS::Partition}:cloudfront::'
+                    - !Ref 'AWS::AccountId'
+                    - !Sub ':distribution/${Distribution}'
+
+  # ---- Cost alerts -------------------------------------------------------
+
+  # Emails AlertEmail when this month's spend passes 80% of the budget, and
+  # when AWS forecasts it will go over.
+  MonthlyBudget:
+    Type: AWS::Budgets::Budget
+    Properties:
+      Budget:
+        BudgetName: !Sub '${AWS::StackName}-monthly'
+        BudgetType: COST
+        TimeUnit: MONTHLY
+        BudgetLimit:
+          Amount: !Ref MonthlyBudgetUsd
+          Unit: USD
+      NotificationsWithSubscribers:
+        - Notification:
+            NotificationType: ACTUAL
+            ComparisonOperator: GREATER_THAN
+            Threshold: 80
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref AlertEmail
+        - Notification:
+            NotificationType: FORECASTED
+            ComparisonOperator: GREATER_THAN
+            Threshold: 100
+            ThresholdType: PERCENTAGE
+          Subscribers:
+            - SubscriptionType: EMAIL
+              Address: !Ref AlertEmail
+
+Outputs:
+  BucketName:
+    Description: GitHub variable S3_BUCKET
+    Value: !Ref SiteBucket
+  DistributionId:
+    Description: GitHub variable CLOUDFRONT_DISTRIBUTION_ID
+    Value: !Ref Distribution
+  DistributionDomainName:
+    Description: Where the Porkbun ALIAS (apex) and CNAME (www) records point
+    Value: !GetAtt Distribution.DomainName
+  DeployRoleArn:
+    Description: GitHub variable AWS_ROLE_ARN
+    Value: !GetAtt DeployRole.Arn

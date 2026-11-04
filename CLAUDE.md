@@ -27,6 +27,10 @@ A change is done when `build` and `lint` both pass.
 - `web/src/data/photos.ts`, `web/src/assets/photos/` - About page photos
 - `web/src/index.css` - colors and fonts as CSS variables, light and dark
 - `web/public/` - files served as-is (`resume.pdf`, icons)
+- `infra/` - AWS hosting (S3 + CloudFront) as a CloudFormation template;
+  its README covers deploying it
+- `.github/workflows/` - GitHub Actions; `deploy.yml` publishes the site
+  on every push to `main`
 
 ## Code conventions
 

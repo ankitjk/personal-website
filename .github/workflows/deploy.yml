@@ -1,0 +1,81 @@
+# Builds the site and publishes it to S3 + CloudFront on every push to main.
+# It can also be started by hand from the Actions tab (workflow_dispatch).
+# The AWS side is set up by infra/site.yaml; see infra/README.md.
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# id-token lets the job ask GitHub for a sign-in token that AWS trusts, so
+# no AWS keys are stored in the repo or its secrets.
+permissions:
+  id-token: write
+  contents: read
+
+# Only one deploy at a time. A newer push waits for the running deploy to
+# finish instead of cancelling it halfway through an upload.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    # Skipped until the repo variables are set (after the AWS stack exists),
+    # so merging this before then doesn't produce a failing run.
+    if: vars.AWS_ROLE_ARN != ''
+    runs-on: ubuntu-latest
+    env:
+      BUCKET: ${{ vars.S3_BUCKET }}
+      DISTRIBUTION_ID: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+    steps:
+      - uses: actions/checkout@v7
+
+      # The repo doesn't pin a Node version, so use the current LTS
+      - uses: actions/setup-node@v7
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+
+      - uses: aws-actions/configure-aws-credentials@v6
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: us-east-1
+
+      # Files in assets/ have a hash of their contents in the name, so a
+      # changed file always gets a new name and can be cached forever. They
+      # go up first, so the new index.html never points at missing files.
+      - name: Upload hashed assets
+        run: >-
+          aws s3 sync web/dist/assets "s3://$BUCKET/assets"
+          --size-only
+          --cache-control 'public, max-age=31536000, immutable'
+
+      # Everything else (index.html, robots.txt, icons, resume.pdf) keeps the
+      # same name between versions, so browsers check for a newer copy on
+      # every visit. --delete removes files that are no longer in the build.
+      - name: Upload everything else
+        run: >-
+          aws s3 sync web/dist "s3://$BUCKET"
+          --delete
+          --exclude 'assets/*'
+          --cache-control 'no-cache'
+
+      # Now that nothing points at them, remove old hashed assets
+      - name: Remove old assets
+        run: >-
+          aws s3 sync web/dist/assets "s3://$BUCKET/assets"
+          --size-only
+          --delete
+          --cache-control 'public, max-age=31536000, immutable'
+
+      # Clear CloudFront's cached copies so visitors get the new version
+      - name: Invalidate CloudFront cache
+        run: >-
+          aws cloudfront create-invalidation
+          --distribution-id "$DISTRIBUTION_ID"
+          --paths '/*'
