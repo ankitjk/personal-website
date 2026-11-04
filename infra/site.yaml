@@ -1,14 +1,21 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: >-
-  ankitjk.com - a private S3 bucket served through CloudFront, its HTTPS
-  certificate, a role GitHub Actions uses to deploy, and a monthly cost
-  budget. See infra/README.md for how to deploy it.
+  ankitjk.com - a private S3 bucket served through CloudFront, the HTTPS
+  certificate for its domain (when one is given), a role GitHub Actions uses
+  to deploy, and a monthly cost budget. See infra/README.md for how to
+  deploy it.
 
 Parameters:
   DomainName:
     Type: String
-    Default: ankitjk.com
-    Description: The site's main address. www.<DomainName> redirects to it.
+    # Empty means no domain yet: the site is only at CloudFront's own
+    # address (like d1234abcd.cloudfront.net). Adding one later by updating
+    # the stack changes the distribution in place.
+    Default: ''
+    Description: >-
+      The site's main address, like example.com, without www or https://.
+      www.<DomainName> redirects to it. Leave empty to use only the
+      CloudFront address.
   AlertEmail:
     Type: String
     # No default on purpose: the address is given when deploying, so it
@@ -25,6 +32,11 @@ Parameters:
     Type: String
     Default: ankitjk/personal-website
     Description: The only GitHub repo (owner/name) allowed to deploy.
+
+Conditions:
+  # True once a domain is given. The certificate, the distribution's extra
+  # addresses and the www redirect all depend on it.
+  HasDomain: !Not [!Equals [!Ref DomainName, '']]
 
 Rules:
   # CloudFront only accepts certificates made in us-east-1, so the whole
@@ -80,11 +92,13 @@ Resources:
 
   # ---- HTTPS and the CDN -------------------------------------------------
 
-  # Certificate for both addresses. There's no Route 53 here (DNS stays at
-  # Porkbun), so stack creation waits until the validation CNAME records
-  # are added at Porkbun by hand. infra/README.md says where to find them.
+  # Certificate for both addresses, only made when there's a domain.
+  # There's no Route 53 here (DNS stays at Porkbun), so the stack waits
+  # until the validation CNAME records are added at Porkbun by hand.
+  # infra/README.md says where to find them.
   Certificate:
     Type: AWS::CertificateManager::Certificate
+    Condition: HasDomain
     Properties:
       DomainName: !Ref DomainName
       SubjectAlternativeNames:
@@ -103,7 +117,8 @@ Resources:
 
   # Runs on every request before the cache is checked:
   # - www.<domain> gets a permanent redirect to https://<domain>, keeping
-  #   the path and query string.
+  #   the path and query string. Without a domain there's no www address,
+  #   so this step is skipped.
   # - A path whose last part has no file extension (/about,
   #   /projects/genmodel) is a page of the React app, so it's served
   #   index.html and react-router picks the page from the address.
@@ -116,9 +131,13 @@ Resources:
       Name: !Sub '${AWS::StackName}-viewer-request'
       AutoPublish: true
       FunctionConfig:
-        Comment: Redirect www to the main domain; serve index.html for pages
+        Comment: !If
+          - HasDomain
+          - Redirect www to the main domain; serve index.html for pages
+          - Serve index.html for pages
         Runtime: cloudfront-js-2.0
       FunctionCode: !Sub |
+        // MAIN_HOST is '' when the stack has no domain yet
         var MAIN_HOST = '${DomainName}'
         var WWW_HOST = 'www.${DomainName}'
 
@@ -142,7 +161,7 @@ Resources:
             ? request.headers.host.value.toLowerCase()
             : ''
 
-          if (host === WWW_HOST) {
+          if (MAIN_HOST !== '' && host === WWW_HOST) {
             var location = 'https://' + MAIN_HOST + request.uri +
               queryString(request.querystring)
             return {
@@ -164,19 +183,28 @@ Resources:
     Properties:
       DistributionConfig:
         Enabled: true
-        Comment: !Ref DomainName
-        Aliases:
-          - !Ref DomainName
-          - !Sub 'www.${DomainName}'
+        Comment: !If [HasDomain, !Ref DomainName, !Ref 'AWS::StackName']
+        # The domain and its www address. Without a domain the distribution
+        # only answers at its own d1234abcd.cloudfront.net address.
+        Aliases: !If
+          - HasDomain
+          - - !Ref DomainName
+            - !Sub 'www.${DomainName}'
+          - !Ref 'AWS::NoValue'
         DefaultRootObject: index.html
         HttpVersion: http2and3
         IPV6Enabled: true
         # North America and Europe edge locations only: the cheapest tier
         PriceClass: PriceClass_100
-        ViewerCertificate:
-          AcmCertificateArn: !Ref Certificate
-          SslSupportMethod: sni-only
-          MinimumProtocolVersion: TLSv1.2_2021
+        # With a domain: its own certificate, TLS 1.2 or newer. Without
+        # one: CloudFront's certificate for *.cloudfront.net, which doesn't
+        # allow choosing a minimum TLS version.
+        ViewerCertificate: !If
+          - HasDomain
+          - AcmCertificateArn: !Ref Certificate
+            SslSupportMethod: sni-only
+            MinimumProtocolVersion: TLSv1.2_2021
+          - CloudFrontDefaultCertificate: true
         Origins:
           - Id: site-bucket
             DomainName: !GetAtt SiteBucket.RegionalDomainName
@@ -315,8 +343,21 @@ Outputs:
     Description: GitHub variable CLOUDFRONT_DISTRIBUTION_ID
     Value: !Ref Distribution
   DistributionDomainName:
-    Description: Where the Porkbun ALIAS (apex) and CNAME (www) records point
+    Description: >-
+      CloudFront's own address for the site; with a domain, also where the
+      Porkbun ALIAS (apex) and CNAME (www) records point
     Value: !GetAtt Distribution.DomainName
+  SiteUrl:
+    Description: Where the site is
+    Value: !If
+      - HasDomain
+      - !Sub 'https://${DomainName}'
+      - !Sub 'https://${Distribution.DomainName}'
+  # Only once there's a domain: the address that redirects to SiteUrl
+  WwwUrl:
+    Condition: HasDomain
+    Description: Redirects to SiteUrl
+    Value: !Sub 'https://www.${DomainName}'
   DeployRoleArn:
     Description: GitHub variable AWS_ROLE_ARN
     Value: !GetAtt DeployRole.Arn
