@@ -1,4 +1,5 @@
 import PhotoStack from '../components/PhotoStack.tsx'
+import { pages } from '../data/pages.ts'
 import { site } from '../data/site.ts'
 import styles from './Page.module.css'
 
@@ -43,17 +44,11 @@ const skillGroups = [
   },
 ]
 
-// Shown under the page's title in search results.
-const description =
-  "I'm a software engineer working mostly on machine learning, backend, " +
-  'computer vision, data analytics, and augmented reality. I studied at ' +
-  'UW-Madison, and I play Smash competitively.'
-
 function About() {
   return (
     <>
-      <title>{`About | ${site.name}`}</title>
-      <meta name="description" content={description} />
+      <title>{pages.about.title}</title>
+      <meta name="description" content={pages.about.description} />
       <h1 className={styles.heading}>About Me</h1>
       <div className={styles.about}>
         <PhotoStack />
