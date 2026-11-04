@@ -10,7 +10,7 @@ with `/log-changes` after finishing a change, before committing.
 ## Next Up
 
 - Add a screenshot or GIF to each project (`imageUrl`), especially GenModel and Space Runner
-- Host on AWS (S3 + CloudFront) and point ankitjk.com at it
+- Deploy the AWS stack and point ankitjk.com at it (steps in `infra/README.md`), then update README.md's "isn't online yet" wording and the site's own description in `projects.ts`
 
 ---
 
@@ -19,6 +19,7 @@ with `/log-changes` after finishing a change, before committing.
 ### November 4, 2026 - README Update, robots.txt and Agent Definitions
 
 **Changes:**
+- `infra/site.yaml`, `infra/README.md`, `.github/workflows/deploy.yml`, `CLAUDE.md` - AWS hosting, written but not deployed yet. One CloudFormation stack in us-east-1 (a new AWS account, and CloudFront only takes certificates made there) holds a private, encrypted S3 bucket that only the CloudFront distribution can read (via Origin Access Control), the certificate for ankitjk.com and www.ankitjk.com, the distribution (HTTPS only, TLS 1.2+, HTTP/2 and 3, the cheapest price class, AWS's managed caching and security-headers policies), a monthly cost budget that emails an address given at deploy time so it never lands in this public repo, and a role GitHub Actions can use. DNS stays at Porkbun rather than moving to Route 53, so the certificate is validated by adding its CNAME records at Porkbun by hand while the stack waits; `infra/README.md` walks through that and the rest of the first deploy in order. A small CloudFront Function redirects www to the bare domain and serves `index.html` for page addresses like `/about`, since the site uses react-router's BrowserRouter; missing files get a real 404 showing the site's "Page not found" page. No Content-Security-Policy header, because a strict one would block the inline dark-mode script in `index.html`. The workflow deploys on every push to `main`, signing in to AWS with GitHub's short-lived tokens (OIDC) rather than stored keys; the role only works for this repo's `main` branch and can only upload to the bucket and clear the CloudFront cache. Hashed files in `assets/` are cached for a year, everything else is checked on each visit. The workflow skips itself until the GitHub repo variables are set, so merging before the stack exists doesn't produce a failing run. CLAUDE.md now lists `infra/` and `.github/workflows/`.
 - `.claude/agents/builder.md`, `.claude/agents/reviewer.md`, `.claude/agents/site-checker.md`, `CLAUDE.md` - three reusable agents, so each brief no longer has to repeat the same instructions. The builder turns one task into one pull request in its own worktree. The reviewer and site-checker are read-only, so checking stays separate from building: the reviewer judges a pull request against its task and CLAUDE.md and is given the change, not the builder's reasoning, so it doesn't just agree with it; the site-checker carries the browser rules worked out so far (light and dark, desktop and phone, never click mailto links, Lighthouse on a production build). Chosen over agents that message each other (backend, frontend, testing, QA): the site is small and static with no backend, its tasks are independent, and each extra hand-off costs tokens and loses detail. Worth revisiting if the site gains a backend. CLAUDE.md lists the three and when each runs.
 
 **Minor:**
