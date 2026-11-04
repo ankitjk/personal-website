@@ -3,6 +3,9 @@
 // their <title> and <meta> tags, and the build (vite.config.ts) also writes
 // them into each page's own HTML file, so link previews and search engines
 // that don't run JavaScript see the right text too.
+//
+// Because vite.config.ts reads this file, it runs in Node during the build
+// and can't import images or CSS. The same goes for projects.ts and site.ts.
 import type { Project } from './projects.ts'
 import { site } from './site.ts'
 

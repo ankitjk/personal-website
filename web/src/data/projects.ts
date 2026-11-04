@@ -1,3 +1,10 @@
+// vite.config.ts also reads this file (to write a page file for each
+// project), so it runs in Node during the build and can't import images or
+// CSS. Put a project's screenshot in web/public/ instead, e.g.
+// web/public/projects/<slug>.webp, and set
+// imageUrl: '/projects/<slug>.webp'. Strip its metadata first with
+// `cwebp -metadata none` (see CLAUDE.md).
+//
 // To add a project, copy one of the objects below and edit it.
 // TypeScript will underline anything that doesn't match the `Project` shape.
 // Projects show on the Projects page in this order.
