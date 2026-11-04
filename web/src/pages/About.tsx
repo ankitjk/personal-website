@@ -43,12 +43,11 @@ const skillGroups = [
   },
 ]
 
-// Shown under the page's title in search results. A draft for Ankit to
-// rewrite in his own words.
+// Shown under the page's title in search results.
 const description =
-  "I'm a software engineer working mostly on machine learning, backend " +
-  'and computer vision. I studied at UW-Madison, and I play Smash ' +
-  'competitively.'
+  "I'm a software engineer working mostly on machine learning, backend, " +
+  'computer vision, data analytics, and augmented reality. I studied at ' +
+  'UW-Madison, and I play Smash competitively.'
 
 function About() {
   return (
