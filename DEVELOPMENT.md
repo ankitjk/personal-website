@@ -3,7 +3,7 @@
 A running record of what changed on the site and why, newest first. Add to it
 with `/log-changes` after finishing a change, before committing.
 
-**Last Updated:** November 3, 2026
+**Last Updated:** November 4, 2026
 
 ---
 
@@ -15,6 +15,11 @@ with `/log-changes` after finishing a change, before committing.
 ---
 
 ## Changelog
+
+### November 4, 2026 - README Update
+
+**Minor:**
+- `README.md` - brought up to date with the site, since it still described the starter project: photos are now listed as living in `web/src/assets/photos/` (via `web/src/data/photos.ts`) rather than `web/public/`, the project write-ups in `projects.ts` are explained (`why`/`what`/`how` paragraphs, `[text](url)` links, `tags` on the card versus `tech` on the project's page), it says plainly that the site isn't online yet, and a new "Making changes" section says every change goes through a pull request only Ankit merges, pointing to CLAUDE.md for the details.
 
 ### November 3, 2026 - Project Pages and Write-Ups
 
