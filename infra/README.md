@@ -332,3 +332,24 @@ change one, add `--parameter-overrides Name=value`.
 - An AWS account can have only one GitHub sign-in provider
   (`token.actions.githubusercontent.com`). If another stack ever needs one,
   it has to reuse the one this stack creates.
+- The deploy role only trusts GitHub sign-in tokens whose subject is
+  exactly this (runs on `main` of this repo):
+
+  ```
+  repo:ankitjk@43698143/personal-website@1443449982:ref:refs/heads/main
+  ```
+
+  The repo uses GitHub's immutable subject claims, so the owner's and
+  repo's numeric IDs follow their names. A repo deleted and made again
+  with the same name gets a new ID, so it can't deploy. The part before
+  `:ref:` is the stack's `GitHubSubjectPrefix` parameter. If the repo is
+  ever renamed, moved or made again, or a deploy fails with "Not
+  authorized to perform sts:AssumeRoleWithWebIdentity", look up the
+  current prefix (the `sub_claim_prefix` in the answer):
+
+  ```sh
+  gh api repos/OWNER/REPO/actions/oidc/customization/sub
+  ```
+
+  Then update the stack as in "Changing the AWS setup later" above, adding
+  `--parameter-overrides GitHubSubjectPrefix=THAT_VALUE`.

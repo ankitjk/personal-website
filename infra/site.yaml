@@ -35,10 +35,22 @@ Parameters:
     Default: 5
     MinValue: 1
     Description: Monthly AWS spend (in US dollars) that triggers alerts.
-  GitHubRepo:
+  GitHubSubjectPrefix:
     Type: String
-    Default: ankitjk/personal-website
-    Description: The only GitHub repo (owner/name) allowed to deploy.
+    # The repo uses GitHub's immutable subject claims, so its sign-in
+    # tokens name it by owner and repo plus their numeric IDs, not just
+    # ankitjk/personal-website. A repo deleted and made again with the same
+    # name gets a new ID, so it can't use the role. To look the value up:
+    #   gh api repos/ankitjk/personal-website/actions/oidc/customization/sub
+    # and copy its sub_claim_prefix. The IDs aren't secret.
+    Default: repo:ankitjk@43698143/personal-website@1443449982
+    Description: >-
+      The start of the GitHub sign-in token's subject for the only repo
+      allowed to deploy, like repo:OWNER@OWNER-ID/REPO@REPO-ID.
+    AllowedPattern: '^repo:[^@/]+@[0-9]+/[^@/]+@[0-9]+$'
+    ConstraintDescription: >-
+      Must look like repo:OWNER@OWNER-ID/REPO@REPO-ID, the sub_claim_prefix
+      that GitHub reports for the repo.
 
 Conditions:
   # True once a domain is given. The certificate, the distribution's extra
@@ -267,8 +279,8 @@ Resources:
         - 1c58a3a8518e8759bf075b76b750d4f2df264fcd
 
   # The role the deploy workflow takes on. Only workflow runs on the main
-  # branch of GitHubRepo can use it, and it can only upload to the bucket
-  # and clear the CloudFront cache.
+  # branch of the repo in GitHubSubjectPrefix can use it, and it can only
+  # upload to the bucket and clear the CloudFront cache.
   DeployRole:
     Type: AWS::IAM::Role
     Properties:
@@ -284,8 +296,10 @@ Resources:
             Condition:
               StringEquals:
                 token.actions.githubusercontent.com:aud: sts.amazonaws.com
+                # An exact match: the prefix followed by
+                # :ref:refs/heads/main, which GitHub uses for runs on main.
                 token.actions.githubusercontent.com:sub: !Sub >-
-                  repo:${GitHubRepo}:ref:refs/heads/main
+                  ${GitHubSubjectPrefix}:ref:refs/heads/main
       Policies:
         - PolicyName: deploy-site
           PolicyDocument:
