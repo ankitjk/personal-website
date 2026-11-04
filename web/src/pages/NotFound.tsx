@@ -6,6 +6,7 @@ function NotFound() {
   return (
     <section className={styles.hero}>
       <title>{`Page not found | ${site.name}`}</title>
+      <meta name="description" content="That page doesn't exist." />
       <h1 className={styles.heading}>Page not found</h1>
       <p className={styles.lead}>That page doesn't exist.</p>
       <p>

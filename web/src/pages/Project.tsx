@@ -38,6 +38,8 @@ function Project() {
   return (
     <article className={styles.writeup}>
       <title>{`${project.title} | ${site.name}`}</title>
+      {/* Search results show the same one-line summary as the card */}
+      <meta name="description" content={project.description} />
       <Link to="/projects" className={styles.back}>
         ← All projects
       </Link>
