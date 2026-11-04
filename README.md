@@ -1,7 +1,9 @@
 # personal-website
 
 Source for Ankit Kulshrestha's personal website, built with React + TypeScript
-(Vite). It isn't online yet: AWS hosting at ankitjk.com comes in a later phase.
+(Vite). It's live at https://d3um1rwtt4xdwd.cloudfront.net (no domain yet),
+hosted on AWS with S3 and CloudFront. Every merge into `main` publishes it
+automatically; [infra/README.md](infra/README.md) explains the AWS setup.
 
 ## Run locally
 
