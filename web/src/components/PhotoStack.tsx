@@ -45,6 +45,11 @@ function PhotoStack() {
             <img
               key={photo.src}
               src={photo.src}
+              srcSet={photo.srcSet}
+              // The stack is 220px wide (see .figure in the CSS), so the
+              // browser picks the 220px file on normal screens, the 440px
+              // one on 2x screens and the 800px one on 3x phones
+              sizes="220px"
               // Only the top photo is described; the others are just edges
               alt={depth === 0 ? photo.alt : ''}
               width={800}
