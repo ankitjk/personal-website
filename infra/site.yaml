@@ -16,6 +16,13 @@ Parameters:
       The site's main address, like example.com, without www or https://.
       www.<DomainName> redirects to it. Leave empty to use only the
       CloudFront address.
+    # Empty, or a bare domain in lowercase. The www redirect compares it
+    # with the visitor's address, which the function lowercases first, so
+    # a capital letter, https:// or a trailing slash would never match.
+    AllowedPattern: '^$|^[a-z0-9-]+(\.[a-z0-9-]+)+$'
+    ConstraintDescription: >-
+      Must be empty or a bare domain like example.com, in lowercase, without
+      https:// and without a trailing slash.
   AlertEmail:
     Type: String
     # No default on purpose: the address is given when deploying, so it
