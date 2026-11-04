@@ -19,6 +19,20 @@ site on every push to `main`. The DNS stays at Porkbun.
 You'll need the AWS CLI signed in to the new account as an administrator,
 and the `gh` CLI signed in to GitHub. Run the commands from the repo root.
 
+There are two good ways to be signed in to AWS as an administrator:
+
+- **An IAM Identity Center user** with admin access: run
+  `aws configure sso` once and follow the prompts, then add
+  `--profile PROFILE_NAME` to the `aws` commands below (or set
+  `AWS_PROFILE`).
+- **AWS CloudShell**: sign in to the AWS console, switch to N. Virginia
+  (us-east-1), open CloudShell, and upload `infra/site.yaml` through its
+  Actions menu. Then use `--template-file site.yaml` in step 1. The `gh`
+  steps still run on your own computer.
+
+Never create access keys for the root user (the email you signed up with).
+They can do anything in the account and can't be limited.
+
 ### 1. Create the stack
 
 ```sh
@@ -42,6 +56,14 @@ certificate until step 2 is done. Leave it running and open a second
 terminal. If the command gives up waiting (it stops after about an hour),
 that's fine: the stack keeps going in AWS, and you can watch it in the
 CloudFormation console instead.
+
+Brand-new AWS accounts are often not allowed to create CloudFront
+distributions yet ("Your account must be verified before you can add new
+CloudFront resources"). The fix is a free AWS Support case (category
+**Account and billing**) asking for CloudFront access. Since the
+distribution is only created after the certificate is validated, this would
+show up as a rollback after step 2; follow "If it fails" below once AWS
+replies.
 
 ### 2. Prove you own the domain (certificate validation)
 
@@ -84,6 +106,33 @@ done when its status is `CREATE_COMPLETE`.
 
 Keep these CNAME records forever: ACM uses them to renew the certificate
 automatically each year.
+
+### If it fails
+
+If anything fails while the stack is first being created, CloudFormation
+undoes everything it made and the stack ends in `ROLLBACK_COMPLETE`.
+Running step 1 again then fails with "ROLLBACK_COMPLETE state and can not
+be updated". To recover:
+
+1. Find out what went wrong: on the stack's **Events** tab in the
+   CloudFormation console, look for the first `CREATE_FAILED` event (the
+   earliest one; later failures are usually knock-on effects). Its status
+   reason says why.
+2. Fix the cause, then delete the failed stack and wait for it to go:
+
+   ```sh
+   aws cloudformation delete-stack --region us-east-1 \
+     --stack-name ankitjk-site
+   aws cloudformation wait stack-delete-complete --region us-east-1 \
+     --stack-name ankitjk-site
+   ```
+
+3. Run step 1 again.
+
+Keep the validation CNAMEs at Porkbun. ACM normally gives the same
+validation record for the same domain in the same account, so the new
+certificate should validate on its own. If the stack waits at the
+certificate for more than half an hour, check the records in step 2 again.
 
 ### 3. Read the stack's outputs
 
