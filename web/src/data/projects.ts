@@ -6,6 +6,9 @@ export interface Project {
   slug: string // the end of the project's page address: /projects/<slug>
   title: string
   description: string // shown on the card and under the title on its page
+  // On the card: the general areas the project covers, then its main language
+  tags: string[]
+  // The rest of the tech stack, shown after the tags on the project's page
   tech: string[]
   imageUrl?: string // the `?` means optional
   repoUrl?: string
@@ -24,7 +27,8 @@ export const projects: Project[] = [
     title: 'RunItBack',
     description:
       'Watches a Super Smash Bros. Ultimate set on YouTube and reports what happened: who played, when each stock was lost, and who had the upper hand.',
-    tech: ['Python', 'PyTorch', 'OpenCV', 'PaddleOCR', 'ONNX', 'Gemini'],
+    tags: ['Computer Vision', 'Machine Learning', 'Python'],
+    tech: ['PyTorch', 'OpenCV', 'PaddleOCR', 'ONNX', 'Gemini'],
     repoUrl: 'https://github.com/ankitjk/RunItBack',
     why: [
       "Like many people in tech spaces, I'm big on gaming. So much so that I compete in Super Smash Bros. Ultimate tournaments regularly and was even ranked #1 on the University of Wisconsin-Madison power rankings.",
@@ -45,7 +49,8 @@ export const projects: Project[] = [
     title: 'GenModel',
     description:
       'An Apple Vision Pro app that turns a description or a photo into a 3D model you can place in the room around you.',
-    tech: ['Swift', 'SwiftUI', 'RealityKit', 'visionOS', 'Replicate'],
+    tags: ['Generative AI', 'Augmented Reality', 'Swift'],
+    tech: ['SwiftUI', 'RealityKit', 'visionOS', 'Replicate'],
     repoUrl: 'https://github.com/ankitjk/GenModel',
     why: [
       "At Holos, I helped develop [Learn in 3D](https://www.holos.io/product/learn), an Apple Vision Pro app for building interactive 3D training courses. Users filled their scenes with 3D models from their own library or Holos' default one. If they needed something more niche, they had to hunt for it online or pay someone to make it, which was slow and expensive.",
@@ -66,7 +71,8 @@ export const projects: Project[] = [
     title: 'Space Runner',
     description:
       'A short 3D flying game made in Unity: steer a plane through an asteroid field with an enemy on your tail, and survive as long as you can.',
-    tech: ['C#', 'Unity'],
+    tags: ['Game Development', 'C#', 'Unity'],
+    tech: [],
     repoUrl: 'https://github.com/ankitjk/space-runner',
     why: [
       "I wanted to create a little Flappy Bird-esque game but in 3D to learn Unity! Also, I'm a bit of a Star Wars nerd so it lines up thematically.",
@@ -84,7 +90,8 @@ export const projects: Project[] = [
     title: 'Personal Website',
     description:
       "This site! A warm, minimal home for who I am, what I've built and how to reach me.",
-    tech: ['React', 'TypeScript', 'Vite', 'CSS'],
+    tags: ['Web Development', 'TypeScript', 'React'],
+    tech: ['Vite', 'CSS'],
     repoUrl: 'https://github.com/ankitjk/personal-website',
     why: [
       "I wanted a place to share more about myself, my hobbies and my projects: something that's holistically about me, not just my career like LinkedIn.",

@@ -44,7 +44,7 @@ function Project() {
       <h1 className={styles.heading}>{project.title}</h1>
       <p className={styles.lead}>{project.description}</p>
       <ul className={styles.skills}>
-        {project.tech.map((t) => (
+        {[...project.tags, ...project.tech].map((t) => (
           <li key={t}>{t}</li>
         ))}
       </ul>

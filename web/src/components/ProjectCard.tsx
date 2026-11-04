@@ -23,11 +23,15 @@ function ProjectCard({ project }: ProjectCardProps) {
         </h2>
         <p className={styles.description}>{project.description}</p>
         <ul className={styles.tags}>
-          {project.tech.map((t) => (
+          {project.tags.map((t) => (
             <li key={t} className={styles.tag}>
               {t}
             </li>
           ))}
+          {/* The rest of the stack is listed on the project's page */}
+          {project.tech.length > 0 && (
+            <li className={`${styles.tag} ${styles.tagMore}`}>and more</li>
+          )}
         </ul>
         <span className={styles.more} aria-hidden="true">
           Read more →
