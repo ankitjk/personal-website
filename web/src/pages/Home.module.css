@@ -18,7 +18,7 @@
 }
 
 .intro {
-  animation: rise 0.7s ease-out backwards;
+  animation: rise 0.5s ease-out backwards;
 }
 
 .name {
@@ -60,7 +60,7 @@
 .links {
   display: flex;
   flex-direction: column;
-  animation: rise 0.7s ease-out 0.12s backwards;
+  animation: rise 0.5s ease-out 0.08s backwards;
 }
 
 .link {
@@ -146,10 +146,13 @@
   }
 }
 
+/* A gentle settle into place. It starts partly visible rather than fully
+   transparent, so the name and line show up straight away (browsers, and
+   Lighthouse, don't count text as shown while it's invisible). */
 @keyframes rise {
   from {
-    opacity: 0;
-    translate: 0 0.75rem;
+    opacity: 0.4;
+    translate: 0 0.4rem;
   }
 }
 
