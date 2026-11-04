@@ -43,10 +43,17 @@ const skillGroups = [
   },
 ]
 
+// Shown under the page's title in search results.
+const description =
+  "I'm a software engineer working mostly on machine learning, backend, " +
+  'computer vision, data analytics, and augmented reality. I studied at ' +
+  'UW-Madison, and I play Smash competitively.'
+
 function About() {
   return (
     <>
       <title>{`About | ${site.name}`}</title>
+      <meta name="description" content={description} />
       <h1 className={styles.heading}>About Me</h1>
       <div className={styles.about}>
         <PhotoStack />
