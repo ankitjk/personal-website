@@ -74,21 +74,25 @@ Creating the CloudFront distribution takes most of the time, usually 5 to
 To start with a domain straight away, add `DomainName=ankitjk.com` after
 the email. The command then won't finish on its own: the stack stops and
 waits at the certificate until you've done step 2 of "Adding a domain"
-below. Leave it running and do that in a second terminal, then step 3
-there once the stack is done. If the command gives up waiting (it stops
-after about an hour), that's fine: the stack keeps going in AWS, and you
-can watch it in the CloudFormation console instead.
+below. Leave it running and do that in a second terminal. If the command
+gives up waiting (it stops after about an hour), that's fine: the stack
+keeps going in AWS, and you can watch it in the CloudFormation console
+instead. Leave step 3 there (pointing the domain at CloudFront) until
+you've published the site in step 4 below and checked it at the
+CloudFront address. Until then the bucket is empty, so the domain would
+show an error instead of the site.
 
 Brand-new AWS accounts are often not allowed to create CloudFront
 distributions yet ("Your account must be verified before you can add new
 CloudFront resources"). The fix is a free AWS Support case (category
 **Account and billing**) asking for CloudFront access. This shows up as a
 rollback within a few minutes (or, with a domain, after the certificate is
-validated); follow "If it fails" below once AWS replies.
+validated); follow "If the first creation fails" below once AWS replies.
 
-### If it fails
+### If the first creation fails
 
-If anything fails while the stack is first being created, CloudFormation
+This is only for a stack that failed while it was first being created, so
+there's no live site to lose. If anything fails then, CloudFormation
 undoes everything it made and the stack ends in `ROLLBACK_COMPLETE`.
 Running step 1 again then fails with "ROLLBACK_COMPLETE state and can not
 be updated". To recover:
@@ -202,6 +206,24 @@ keeps working at the CloudFront address. Find the first `UPDATE_FAILED`
 event on the stack's **Events** tab, fix the cause, and run this step
 again; there's no need to delete anything.
 
+If the update is stuck waiting at the certificate and you can't do step 2
+yet (for example, you can't edit the domain's DNS yet), stop it:
+
+```sh
+aws cloudformation cancel-update-stack --region us-east-1 \
+  --stack-name ankitjk-site
+```
+
+The stack rolls back to no domain and ends in `UPDATE_ROLLBACK_COMPLETE`,
+and the site keeps working at the CloudFront address. Run this step again
+once you can edit the DNS.
+
+Once the site is live, don't delete the stack, even to get out of a stuck
+or failed update. Deleting it removes the bucket, the distribution and the
+deploy role, so the site goes down, and making it again gives a new
+CloudFront address and new values for the GitHub variables. "If the first
+creation fails" above is only for a stack whose first creation failed.
+
 ### 2. Prove you own the domain (certificate validation)
 
 ACM won't issue the certificate until it sees a special CNAME record in
@@ -246,6 +268,10 @@ Keep these CNAME records forever: ACM uses them to renew the certificate
 automatically each year.
 
 ### 3. Point ankitjk.com at CloudFront
+
+If you gave the domain when first creating the stack, wait until you've
+published the site (step 4 of the first-time setup) and checked it at the
+CloudFront address.
 
 At Porkbun, on the same DNS page as step 2:
 
