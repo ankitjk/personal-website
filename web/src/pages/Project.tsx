@@ -62,6 +62,11 @@ function Project() {
             Visit ↗
           </a>
         )}
+        {project.paperUrl && (
+          <a href={project.paperUrl} target="_blank" rel="noreferrer">
+            Read the paper ↗
+          </a>
+        )}
       </div>
       {project.imageUrl && (
         <img src={project.imageUrl} alt="" className={styles.projectImage} />

@@ -3,12 +3,13 @@
 A running record of what changed on the site and why, newest first. Add to it
 with `/log-changes` after finishing a change, before committing.
 
-**Last Updated:** November 4, 2026
+**Last Updated:** November 5, 2026
 
 ---
 
 ## Next Up
 
+- Write wrmXpress's "Why I built it" in `web/src/data/projects.ts`, and check its draft write-up
 - Add a screenshot or GIF to each project (`imageUrl`), especially GenModel and Space Runner. Put each in `web/public/` (e.g. `web/public/projects/<slug>.webp`, stripped with `cwebp -metadata none`) and set `imageUrl: '/projects/<slug>.webp'`; don't import it in `projects.ts`, since `vite.config.ts` reads that file in Node and the build would fail
 - Connect ankitjk.com in the repo's Settings → Pages once the first Pages deploy has run, and turn on Enforce HTTPS once GitHub has issued the certificate
 - After the switch, tear down the AWS stack (`ankitjk-site`) and the account's other resources, and delete the GitHub repo variables `AWS_ROLE_ARN`, `S3_BUCKET` and `CLOUDFRONT_DISTRIBUTION_ID`
@@ -16,6 +17,18 @@ with `/log-changes` after finishing a change, before committing.
 ---
 
 ## Changelog
+
+### November 5, 2026 - wrmXpress Project
+
+**Changes:**
+- `web/src/data/projects.ts` - wrmXpress is a new project, second in the list after RunItBack. From June 2023 to May 2024 I was a software engineer at the Zamanian Lab at UW-Madison and worked on wrmXpress, the lab's computer vision tool for screening drugs against parasitic worms, and I'm a co-author (9th of 13) of the lab's 2025 paper on wrmXpress 2.0. The write-up says plainly that wrmXpress is the lab's tool and that I worked on it as part of the team. "What it does" and "How I made it" are drafted only from my resume, the lab repo's README and the paper's abstract; "Why I built it" is left empty for me to write. Its tags are Computer Vision, Image Processing and Python; its tech is OpenCV (from the resume) plus NumPy, pandas, scikit-image and Docker, which the repo's README lists. The code link is the lab's repo (https://github.com/zamanianlab/wrmXpress).
+- `web/src/data/projects.ts`, `web/src/pages/Project.tsx` - projects can now have an optional `paperUrl`, shown on the project's page as a "Read the paper ↗" link after "View code" and "Visit", with the same style. wrmXpress's points to the paper's DOI (https://doi.org/10.1016/j.ijpddr.2025.100588). The project cards don't show links, so they're unchanged.
+
+**Results:**
+- Build and lint pass. The build writes `projects/wrmxpress.html` with the title "wrmXpress | Ankit Kulshrestha" and the project's one-line description, with no change to `vite.config.ts` or `pages.ts`. In headless Chrome at 1280px and 390px, in light and dark mode, the wrmXpress page shows both links on one line and the Projects page lists it second; RunItBack's page is unchanged, with no paper link.
+
+**Left open:**
+- The Projects page description in `web/src/data/pages.ts` lists RunItBack, GenModel and Space Runner as examples and doesn't mention wrmXpress.
 
 ### November 4, 2026 - Lighthouse Fixes, Going Live and Moving to GitHub Pages
 
