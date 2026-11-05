@@ -37,6 +37,36 @@
   }
 }
 
+/* Publications: one citation per paper, with the title (the link), the
+   authors and the journal each starting on their own line. Long titles and
+   journal names wrap rather than pushing the page sideways on phones. */
+.publications {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1.25rem;
+  overflow-wrap: break-word;
+}
+
+.publications li > * {
+  display: block;
+}
+
+.publications a {
+  font-weight: 500;
+}
+
+.authors {
+  color: var(--text-muted);
+}
+
+/* My own name stands out from the muted list around it */
+.authors strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 /* Skills: one row per group, with the group name beside its tags.
    On phones the name sits above the tags instead. */
 .skillGroups {

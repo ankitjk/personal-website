@@ -1,5 +1,7 @@
+import { Fragment } from 'react'
 import PhotoStack from '../components/PhotoStack.tsx'
 import { pages } from '../data/pages.ts'
+import { me, publications } from '../data/publications.ts'
 import { site } from '../data/site.ts'
 import styles from './Page.module.css'
 
@@ -77,6 +79,35 @@ function About() {
           </p>
         </div>
       </div>
+
+      <section className={styles.section}>
+        <h2>Publications</h2>
+        <ul className={styles.publications}>
+          {publications.map((paper) => (
+            <li key={paper.url}>
+              <a href={paper.url} target="_blank" rel="noreferrer">
+                {paper.title}
+              </a>
+              <span className={styles.authors}>
+                {/* Commas between names, with my own name in bold.
+                    Fragment gives each name a key without adding a tag. */}
+                {paper.authors.map((author, i) => (
+                  <Fragment key={author}>
+                    {i > 0 && ', '}
+                    {author === me ? <strong>{author}</strong> : author}
+                  </Fragment>
+                ))}
+                .
+              </span>
+              <span>
+                <em>{paper.venue}</em>
+                {paper.volume && `, vol. ${paper.volume}`}
+                {paper.article && `, ${paper.article}`}, {paper.year}.
+              </span>
+            </li>
+          ))}
+        </ul>
+      </section>
 
       <section className={styles.section}>
         <h2>Skills and Tech Stack</h2>
