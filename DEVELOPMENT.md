@@ -3,7 +3,7 @@
 A running record of what changed on the site and why, newest first. Add to it
 with `/log-changes` after finishing a change, before committing.
 
-**Last Updated:** November 4, 2026
+**Last Updated:** November 5, 2026
 
 ---
 
@@ -15,6 +15,14 @@ with `/log-changes` after finishing a change, before committing.
 ---
 
 ## Changelog
+
+### November 5, 2026 - Publications on the About Page
+
+**Changes:**
+- `web/src/data/publications.ts`, `web/src/pages/About.tsx`, `web/src/pages/Page.module.css` - the About page has a new "Publications" section between the intro (photos and bio) and Skills, listing my one paper so far: the wrmXpress 2.0 graphical user interface paper in the International Journal for Parasitology: Drugs and Drug Resistance (vol. 27, 100588, 2025). It's shown as a normal citation: the title links to the paper's permanent DOI address (it's open access) and opens in a new tab like the resume link, then the full author list as the paper gives it (surname then initials), then the journal in italics with volume, article number and year. My name ("Kulshrestha A") is in bold so it's easy to spot in the list of thirteen; there's no sentence about my part in it, since the citation speaks for itself. The papers live in a typed list in their own data file rather than a const in `About.tsx`, matching `projects.ts` and `photos.ts`, so adding a paper later means editing data, not layout; the skill groups stay in `About.tsx` since they're only used there. Besides the asked-for title, authors, venue, year and url, each paper has optional `volume` and `article` fields, so only the journal name is italic. The section uses the same `section` markup and styles as Skills, and only the color variables from `index.css`. The title, authors and journal each start on their own line and wrap normally, so the long title and journal name fit a 390px phone without sideways scrolling. The title's link stays inline (only the authors and journal lines are blocks), so it's only as wide as the title, since review found that putting each part on its own line had stretched the link across the whole row, making empty space beside the title clickable and the focus ring about 928px wide for a 630px title at 1280px. No new dependencies.
+
+**Results:**
+- Build and lint pass. Checked the production build in headless Chrome at 1280px and 390px wide, in light and dark mode: the section sits between the intro and Skills, the link goes to the DOI address in a new tab, my name is bold in both themes, the link and its focus ring fit the title, and the page doesn't scroll sideways on a phone.
 
 ### November 4, 2026 - Lighthouse Fixes, Going Live and Moving to GitHub Pages
 
