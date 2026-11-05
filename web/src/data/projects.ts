@@ -24,7 +24,9 @@ export interface Project {
   // The write-up on the project's page: one string per paragraph.
   // Write [text](https://...) for a link. A section left empty shows
   // "Coming soon."
-  why: string[]
+  // Leave out `why` to hide the "Why I built it" section; an empty list
+  // still shows "Coming soon."
+  why?: string[]
   what: string[]
   how: string[]
 }
@@ -58,19 +60,18 @@ export const projects: Project[] = [
     description:
       "The Zamanian Lab's computer vision tool for analyzing images and videos of worms, used to screen for new drugs against parasitic diseases.",
     tags: ['Computer Vision', 'Image Processing', 'Python'],
-    tech: ['OpenCV', 'NumPy', 'pandas', 'scikit-image', 'Docker'],
+    tech: ['OpenCV', 'Docker'],
     repoUrl: 'https://github.com/zamanianlab/wrmXpress',
     paperUrl: 'https://doi.org/10.1016/j.ijpddr.2025.100588',
-    why: [],
     what: [
       "wrmXpress is the Zamanian Lab's open-source tool for analyzing microscope images and videos of worms, both parasitic and free-living. It's used for drug screening: worms are imaged in multi-well plates, as still images or videos, and wrmXpress measures what's happening in each well, like how much the worms are moving and where each worm is in the picture.",
-      "wrmXpress 2.0 added a point-and-click interface that runs in the web browser of an ordinary computer, so researchers don't need a powerful remote server or the command line to use it. The lab described it in a 2025 paper in the [International Journal for Parasitology: Drugs and Drug Resistance](https://doi.org/10.1016/j.ijpddr.2025.100588), and I'm one of its co-authors.",
+      "wrmXpress 2.0 added a point-and-click interface that runs in the web browser of an ordinary computer, so researchers don't need a powerful remote server or the command line to use it. The lab described it in a 2025 paper in the [International Journal for Parasitology: Drugs and Drug Resistance](https://doi.org/10.1016/j.ijpddr.2025.100588), and I'm one of its co-authors, credited for the software.",
     ],
     how: [
       'wrmXpress belongs to the Zamanian Lab at UW-Madison, and I worked on it as part of the team while I was a software engineer there, from June 2023 to May 2024.',
-      "I developed image and video processing pipelines in Python with OpenCV for the lab's high-throughput drug screening across 24–96 well plates and videos of up to 500 frames, supporting research for the industry partner Zoetis. I wrote wrmXpress's preprocessing code, which reads an experiment's settings and the microscope's plate files, crops each image into its wells, stitches multi-site images together and converts videos. I also wrote its optical flow pipeline, which measures how much worms move, and its diagnostics, which make whole-plate images and videos to check a run.",
+      "A big part of my job was working directly with the lab's researchers, the people who used wrmXpress every day. I talked with them to understand what their experiments needed, turned those non-technical requirements into technical specifications for the software, and explained the technical side back to them in plain terms.",
+      "I developed image and video processing pipelines in Python with OpenCV for the lab's high-throughput drug screening across 24–96 well plates and videos of up to 500 frames. I wrote wrmXpress's preprocessing code, which reads an experiment's settings and the microscope's plate files, crops each image into its wells, stitches multi-site images together and converts videos. I also wrote its optical flow pipeline, which measures how much worms move, and its diagnostics, which make whole-plate images and videos to check a run.",
       "Building these as separate preprocessing and pipeline stages, in place of the older modules, was part of refactoring wrmXpress's architecture, which made its processing about 30% more efficient. That structure became the core of wrmXpress 2.0.",
-      "Along the way, I worked with the lab's researchers to turn what their biology experiments needed into specifications for the software.",
     ],
   },
   {

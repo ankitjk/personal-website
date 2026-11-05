@@ -72,18 +72,23 @@ function Project() {
         <img src={project.imageUrl} alt="" className={styles.projectImage} />
       )}
 
-      {sections.map(({ key, heading }) => (
-        <section key={key} className={styles.section}>
-          <h2>{heading}</h2>
-          {project[key].length > 0 ? (
-            project[key].map((paragraph) => (
-              <p key={paragraph}>{withLinks(paragraph)}</p>
-            ))
-          ) : (
-            <p className={styles.comingSoon}>Coming soon.</p>
-          )}
-        </section>
-      ))}
+      {sections.map(({ key, heading }) => {
+        const paragraphs = project[key]
+        // A project can leave out `why` to hide that section altogether
+        if (!paragraphs) return null
+        return (
+          <section key={key} className={styles.section}>
+            <h2>{heading}</h2>
+            {paragraphs.length > 0 ? (
+              paragraphs.map((paragraph) => (
+                <p key={paragraph}>{withLinks(paragraph)}</p>
+              ))
+            ) : (
+              <p className={styles.comingSoon}>Coming soon.</p>
+            )}
+          </section>
+        )
+      })}
 
       {projects.length > 1 && (
         <Link to={`/projects/${next.slug}`} className={styles.next}>
