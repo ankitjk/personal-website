@@ -4,7 +4,7 @@ import { projectPage } from '../data/pages.ts'
 import NotFound from './NotFound.tsx'
 import styles from './Page.module.css'
 
-// The parts of every write-up, in order
+// The parts of a write-up, in order
 const sections = [
   { key: 'why', heading: 'Why I built it' },
   { key: 'what', heading: 'What it does' },
@@ -62,23 +62,33 @@ function Project() {
             Visit ↗
           </a>
         )}
+        {project.paperUrl && (
+          <a href={project.paperUrl} target="_blank" rel="noreferrer">
+            Read the paper ↗
+          </a>
+        )}
       </div>
       {project.imageUrl && (
         <img src={project.imageUrl} alt="" className={styles.projectImage} />
       )}
 
-      {sections.map(({ key, heading }) => (
-        <section key={key} className={styles.section}>
-          <h2>{heading}</h2>
-          {project[key].length > 0 ? (
-            project[key].map((paragraph) => (
-              <p key={paragraph}>{withLinks(paragraph)}</p>
-            ))
-          ) : (
-            <p className={styles.comingSoon}>Coming soon.</p>
-          )}
-        </section>
-      ))}
+      {sections.map(({ key, heading }) => {
+        const paragraphs = project[key]
+        // A project can leave out `why` to hide that section altogether
+        if (!paragraphs) return null
+        return (
+          <section key={key} className={styles.section}>
+            <h2>{heading}</h2>
+            {paragraphs.length > 0 ? (
+              paragraphs.map((paragraph) => (
+                <p key={paragraph}>{withLinks(paragraph)}</p>
+              ))
+            ) : (
+              <p className={styles.comingSoon}>Coming soon.</p>
+            )}
+          </section>
+        )
+      })}
 
       {projects.length > 1 && (
         <Link to={`/projects/${next.slug}`} className={styles.next}>

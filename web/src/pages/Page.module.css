@@ -141,7 +141,10 @@
 
 .projectLinks {
   display: flex;
-  gap: 1.25rem;
+  /* Several links wrap onto a second line rather than running off a narrow
+     phone: 0.5rem between lines, 1.25rem between links as before */
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
   margin-top: 1.25rem;
   font-weight: 500;
 }

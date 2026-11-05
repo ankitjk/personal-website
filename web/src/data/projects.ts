@@ -20,10 +20,12 @@ export interface Project {
   imageUrl?: string // the `?` means optional
   repoUrl?: string
   liveUrl?: string
+  paperUrl?: string // a paper about the project, like its DOI link
   // The write-up on the project's page: one string per paragraph.
   // Write [text](https://...) for a link. A section left empty shows
   // "Coming soon."
-  why: string[]
+  // Leave out `why` to hide the "Why I built it" section
+  why?: string[]
   what: string[]
   how: string[]
 }
@@ -49,6 +51,26 @@ export const projects: Project[] = [
       "It's written in Python. It downloads the video with yt-dlp and looks at a frame every half second with OpenCV. Each frame goes through a few separate checks: the GO! and GAME! screens mark where games start and end, PaddleOCR reads each player's damage percentage, and Gemini identifies the characters.",
       "To tell what's happening on screen, like a player being offstage, on the ledge or respawning, I trained a ConvNeXt-Tiny image classifier in PyTorch. There wasn't labeled Smash footage to train it on, so I built a PyQt5 app for labeling video and organized a Discord community of about 70 people to help. The classifier is 92% accurate across 7 kinds of scene.",
       "No single signal is reliable on its own. The damage reading breaks under particle effects, for example, so a stock loss only counts when the signals agree: high damage first, then the number resetting or the player respawning. The last stock of each game was the hardest, since nobody respawns. Counting the stock icons was right only once in 14 checks, but I noticed that on the GAME! screen the loser's damage number disappears while the winner's stays. Checking for that got 11 of 14 game endings right, with none wrong.",
+    ],
+  },
+  {
+    slug: 'wrmxpress',
+    title: 'wrmXpress',
+    description:
+      "The Zamanian Lab's computer vision tool for analyzing images and videos of worms, used to screen for new drugs against parasitic diseases.",
+    tags: ['Computer Vision', 'Image Processing', 'Python'],
+    tech: ['OpenCV', 'NumPy', 'SciPy', 'Pillow', 'Matplotlib', 'Docker'],
+    repoUrl: 'https://github.com/zamanianlab/wrmXpress',
+    paperUrl: 'https://doi.org/10.1016/j.ijpddr.2025.100588',
+    what: [
+      "wrmXpress is the Zamanian Lab's open-source tool for analyzing microscope images and videos of worms, both parasitic and free-living. It's used for drug screening: worms are imaged in multi-well plates, as still images or videos, and wrmXpress measures what's happening in each well, like how much the worms are moving and where each worm is in the picture.",
+      "wrmXpress 2.0 added a point-and-click interface that runs in the web browser of an ordinary computer, so researchers don't need a powerful remote server or the command line to use it. The lab described it in a 2025 paper in the [International Journal for Parasitology: Drugs and Drug Resistance](https://doi.org/10.1016/j.ijpddr.2025.100588), and I'm one of the co-authors credited with its software.",
+    ],
+    how: [
+      'wrmXpress belongs to the Zamanian Lab at UW-Madison, and I worked on it as part of the team while I was a software engineer there, from June 2023 to May 2024.',
+      "I worked directly with the lab's researchers, the people who used wrmXpress. I talked with them to understand what their experiments needed, turned those non-technical requirements into technical specifications for the software, and explained the technical side back to them in plain terms.",
+      "I developed image and video processing pipelines in Python with OpenCV for the lab's high-throughput drug screening across 24–96 well plates and videos of up to 500 frames. I wrote wrmXpress's preprocessing code, which reads an experiment's settings and the microscope's plate files, crops each image into its wells, stitches multi-site images together and converts videos. I also wrote its optical flow pipeline, which measures how much worms move, and its diagnostics, which make whole-plate images and videos to check a run.",
+      "Building these as separate preprocessing and pipeline stages, in place of the older modules, was part of refactoring wrmXpress's architecture, which made its processing about 30% more efficient. That structure became the core of wrmXpress 2.0.",
     ],
   },
   {
