@@ -16,6 +16,17 @@ with `/log-changes` after finishing a change, before committing.
 
 ## Changelog
 
+### November 5, 2026 - Link Hover and Focus
+
+**Changes:**
+- `web/src/index.css` - text links now get a thicker underline (2px instead of the browser's thin one) on hover, and the same underline plus a 2px clay ring (`--link`, 2px from the text, slightly rounded) on keyboard focus. Browser checks found that plain text links didn't visibly change on hover, only the cursor did: the email, "View my resume!" and Publications title on the About page, "View code ↗", "Visit ↗" and "Read the paper ↗" on project pages, and links inside write-ups. The color stays `--link`, so contrast is unchanged: 5.31:1 on the background and 5.69:1 on cards in light mode, 8.90:1 and 8.09:1 in dark mode, all above WCAG AA's 4.5:1. Shifting to the brighter `--accent` was ruled out because it's only 3.83:1 on the light background. The ring matches the one the project cards, theme switch, photo stack and home page links already use. Both rules are wrapped in `:where()` so they have no specificity, and every link with its own hover or focus style keeps it (checked in the browser: the home page links and project cards are unchanged). Links that had only the browser's default focus outline (navbar, name, footer, "← All projects", "Next project") now show the clay ring instead, so focus looks the same across the site. There's no transition: the browser's default underline thickness (`auto`) can't animate, and setting a fixed resting thickness to make it animate would change how every link looks at rest.
+
+**Results:**
+- Build and lint pass. In headless Chrome at 1280px and 390px, in light and dark mode, hovering the About page links and the wrmXpress page links (including the write-up's journal link) thickens their underline without changing color, and Tab shows the ring and thicker underline on each. Comparing every link's hover and focus styles against `main` on the home, About, Projects and wrmXpress pages, nothing else changed except the focus ring on links that only had the browser's default. No project has a live link yet, so "Visit ↗" wasn't seen, but it's in the same `.projectLinks` row as "View code ↗" and gets the same rules.
+
+**Left open:**
+- The "Next project" link at the end of a write-up has no underline, so it still doesn't change on hover.
+
 ### November 5, 2026 - wrmXpress Project
 
 **Changes:**
