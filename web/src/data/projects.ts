@@ -63,12 +63,12 @@ export const projects: Project[] = [
     paperUrl: 'https://doi.org/10.1016/j.ijpddr.2025.100588',
     why: [],
     what: [
-      "wrmXpress is the Zamanian Lab's open-source tool for analyzing microscope images and videos of worms, both parasitic and free-living. It's used for drug screening: worms are imaged in plates of 24 to 96 wells, sometimes as videos of up to 500 frames, and wrmXpress measures what's happening in each well, like how much the worms are moving and where each worm is in the picture.",
-      "The latest version, wrmXpress 2.0, adds a point-and-click interface that runs in the web browser of an ordinary computer, so researchers don't need a powerful remote server or the command line to use it. The lab described it in a 2025 paper in the [International Journal for Parasitology: Drugs and Drug Resistance](https://doi.org/10.1016/j.ijpddr.2025.100588), and I'm one of its co-authors.",
+      "wrmXpress is the Zamanian Lab's open-source tool for analyzing microscope images and videos of worms, both parasitic and free-living. It's used for drug screening: worms are imaged in multi-well plates, as still images or videos, and wrmXpress measures what's happening in each well, like how much the worms are moving and where each worm is in the picture.",
+      "wrmXpress 2.0 added a point-and-click interface that runs in the web browser of an ordinary computer, so researchers don't need a powerful remote server or the command line to use it. The lab described it in a 2025 paper in the [International Journal for Parasitology: Drugs and Drug Resistance](https://doi.org/10.1016/j.ijpddr.2025.100588), and I'm one of its co-authors.",
     ],
     how: [
       'wrmXpress belongs to the Zamanian Lab at UW-Madison, and I worked on it as part of the team while I was a software engineer there, from June 2023 to May 2024.',
-      "I developed image and video processing pipelines in Python with OpenCV for the lab's high-throughput drug screening, supporting research with its industry partner Zoetis. I also refactored how wrmXpress is organized, which made its processing about 30% more efficient across its mix of images and videos, including motility analysis (measuring how much worms move with optical flow) and worm segmentation (picking out each worm from the background).",
+      "I developed image and video processing pipelines in Python with OpenCV for the lab's high-throughput drug screening across 24–96 well plates and videos of up to 500 frames, supporting research for the industry partner Zoetis. I also refactored how wrmXpress is organized, which made its processing about 30% more efficient across its mix of images and videos, including motility analysis (measuring how much worms move with optical flow) and worm segmentation (picking out each worm from the background).",
       "Along the way, I worked with the lab's researchers to turn what their biology experiments needed into specifications for the software.",
     ],
   },
