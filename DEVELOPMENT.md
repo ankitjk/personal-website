@@ -10,7 +10,6 @@ with `/log-changes` after finishing a change, before committing.
 ## Next Up
 
 - Add a screenshot or GIF to each project (`imageUrl`), especially GenModel and Space Runner. Put each in `web/public/` (e.g. `web/public/projects/<slug>.webp`, stripped with `cwebp -metadata none`) and set `imageUrl: '/projects/<slug>.webp'`; don't import it in `projects.ts`, since `vite.config.ts` reads that file in Node and the build would fail
-- Tick "Enforce HTTPS" in the repo's Settings → Pages, so http://ankitjk.com always redirects to https
 
 ---
 
@@ -23,6 +22,9 @@ with `/log-changes` after finishing a change, before committing.
 
 **Results:**
 - Build and lint pass. In headless Chrome at 1280px and 390px, in light and dark mode, hovering the About page links and the wrmXpress page links (including the write-up's journal link) thickens their underline without changing color, and Tab shows the ring and thicker underline on each. Comparing every link's hover and focus styles against `main` on the home, About, Projects and wrmXpress pages, nothing else changed except the focus ring on links that only had the browser's default. No project has a live link yet, so "Visit ↗" wasn't seen, but it's in the same `.projectLinks` row as "View code ↗" and gets the same rules.
+
+**Minor:**
+- `DEVELOPMENT.md` - Next Up drops ticking "Enforce HTTPS" in Settings → Pages, since it's already on: GitHub's API shows `https_enforced: true` and http:// redirects to https://.
 
 **Left open:**
 - The "Next project" link at the end of a write-up has no underline, so it still doesn't change on hover.
