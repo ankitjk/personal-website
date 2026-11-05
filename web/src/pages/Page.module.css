@@ -49,7 +49,10 @@
   overflow-wrap: break-word;
 }
 
-.publications li > * {
+/* The authors and journal are blocks, so each starts a new line. The title's
+   link stays inline, so it (and its focus ring) is only as wide as the
+   title, and the authors block below still pushes it onto its own line. */
+.publications li > span {
   display: block;
 }
 
