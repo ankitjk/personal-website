@@ -68,7 +68,8 @@ export const projects: Project[] = [
     ],
     how: [
       'wrmXpress belongs to the Zamanian Lab at UW-Madison, and I worked on it as part of the team while I was a software engineer there, from June 2023 to May 2024.',
-      "I developed image and video processing pipelines in Python with OpenCV for the lab's high-throughput drug screening across 24–96 well plates and videos of up to 500 frames, supporting research for the industry partner Zoetis. I also refactored how wrmXpress is organized, which made its processing about 30% more efficient across its mix of images and videos, including motility analysis (measuring how much worms move with optical flow) and worm segmentation (picking out each worm from the background).",
+      "I developed image and video processing pipelines in Python with OpenCV for the lab's high-throughput drug screening across 24–96 well plates and videos of up to 500 frames, supporting research for the industry partner Zoetis. I wrote wrmXpress's preprocessing code, which reads an experiment's settings and the microscope's plate files, crops each image into its wells, stitches multi-site images together and converts videos. I also wrote its optical flow pipeline, which measures how much worms move, and its diagnostics, which make whole-plate images and videos to check a run.",
+      "Building these as separate preprocessing and pipeline stages, in place of the older modules, was part of refactoring wrmXpress's architecture, which made its processing about 30% more efficient. That structure became the core of wrmXpress 2.0.",
       "Along the way, I worked with the lab's researchers to turn what their biology experiments needed into specifications for the software.",
     ],
   },
