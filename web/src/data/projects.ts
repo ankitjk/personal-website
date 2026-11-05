@@ -60,7 +60,7 @@ export const projects: Project[] = [
     description:
       "The Zamanian Lab's computer vision tool for analyzing images and videos of worms, used to screen for new drugs against parasitic diseases.",
     tags: ['Computer Vision', 'Image Processing', 'Python'],
-    tech: ['OpenCV', 'Docker'],
+    tech: ['OpenCV', 'NumPy', 'SciPy', 'Pillow', 'Matplotlib', 'Docker'],
     repoUrl: 'https://github.com/zamanianlab/wrmXpress',
     paperUrl: 'https://doi.org/10.1016/j.ijpddr.2025.100588',
     what: [
