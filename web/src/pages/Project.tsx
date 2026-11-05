@@ -4,7 +4,7 @@ import { projectPage } from '../data/pages.ts'
 import NotFound from './NotFound.tsx'
 import styles from './Page.module.css'
 
-// The parts of every write-up, in order
+// The parts of a write-up, in order
 const sections = [
   { key: 'why', heading: 'Why I built it' },
   { key: 'what', heading: 'What it does' },
