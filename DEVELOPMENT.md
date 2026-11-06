@@ -15,6 +15,11 @@ with `/log-changes` after finishing a change, before committing.
 
 ## Changelog
 
+### November 5, 2026 - Active Navbar Link on Hover
+
+**Minor:**
+- `web/src/components/Navbar.module.css` - the navbar link for the page you're on (e.g. "Projects" on /projects or a project page) now stays clay (`--link`) when hovered, in light and dark mode. Before, `.link:hover` (a class plus `:hover`) beat `.active` (a class alone) on specificity, so hovering it turned it the plain text color. The active rule now also covers `.active:hover`. Other navbar links keep their muted-to-text hover.
+
 ### November 5, 2026 - Link Hover and Focus
 
 **Changes:**
