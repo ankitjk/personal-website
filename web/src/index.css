@@ -64,6 +64,22 @@ a {
   color: var(--link);
 }
 
+/* Text links get a thicker underline on hover, so they visibly respond
+   without changing color (the brighter clay is too light to read on the
+   oat background). Keyboard focus gets the same underline plus the clay
+   ring used by the project cards, theme switch and home page links.
+   :where() gives these rules no specificity, so links with their own hover
+   or focus style (the navbar, project cards, home page links) keep it. */
+:where(a:hover, a:focus-visible) {
+  text-decoration-thickness: 2px;
+}
+
+:where(a:focus-visible) {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
 img {
   max-width: 100%;
   display: block;
