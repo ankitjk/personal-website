@@ -54,7 +54,9 @@
   color: var(--text);
 }
 
-.active {
+/* The link for the page you're on stays clay, even on hover */
+.active,
+.active:hover {
   color: var(--link);
 }
 
