@@ -15,6 +15,11 @@ with `/log-changes` after finishing a change, before committing.
 
 ## Changelog
 
+### November 5, 2026 - log-changes Skill Matches Practice
+
+**Minor:**
+- `.claude/skills/log-changes/SKILL.md` - the skill now describes how the Changelog is actually written: one entry per change (one commit, one pull request) rather than per working session, so a day can have several. It only adds to an existing entry if that entry is for the same change and still unmerged on this branch, and it finds commits with `git log origin/main..HEAD`. The template gains the `**Results:**` section most entries already have, and results must come from checks actually run. Before, its "reuse today's entry" step would have merged separate pull requests into one entry.
+
 ### November 5, 2026 - Active Navbar Link on Hover
 
 **Minor:**
