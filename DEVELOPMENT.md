@@ -18,7 +18,7 @@ with `/log-changes` after finishing a change, before committing.
 ### November 5, 2026 - log-changes Skill Matches Practice
 
 **Minor:**
-- `.claude/skills/log-changes/SKILL.md` - the skill now describes how the Changelog is actually written: one entry per change (one commit, one pull request) rather than per working session, so a day can have several. It only adds to an existing entry if that entry is for the same change and still unmerged on this branch, and it finds commits with `git log origin/main..HEAD`. The template gains the `**Results:**` section most entries already have, and results must come from checks actually run. Before, its "reuse today's entry" step would have merged separate pull requests into one entry.
+- `.claude/skills/log-changes/SKILL.md` - the skill now describes how the Changelog is actually written: one entry per change (one commit, one pull request) rather than per working session, so a day can have several. It only adds to an existing entry if that entry is for the same change and still unmerged on this branch, and it finds commits with `git log origin/main..HEAD`. The template gains the `**Results:**` section most entries already have, and results must come from checks actually run. Before, its "reuse today's entry" step would have merged separate pull requests into one entry. The November 2-4 entries had Results after Minor, so they're reordered to match the template, with no wording changed.
 
 ### November 5, 2026 - Active Navbar Link on Hover
 
@@ -75,6 +75,11 @@ with `/log-changes` after finishing a change, before committing.
 - GitHub Pages custom domain (a repo setting, not a file) - ankitjk.com is now connected in the repo's Settings → Pages, finishing the move to GitHub Pages. GitHub's HTTPS certificate sat at its first step for about two hours, so I removed the domain in Settings → Pages and added it again, after which GitHub issued the certificate, covering ankitjk.com and www.ankitjk.com. "Enforce HTTPS" is still to be ticked, so it's in Next Up.
 - AWS account (not a file) - the AWS hosting is torn down now that the site is on GitHub Pages. I emptied the S3 bucket and deleted the CloudFormation stack `ankitjk-site` (us-east-1), which removed the bucket, the CloudFront distribution, its Origin Access Control and CloudFront Function, the deploy role, the GitHub OIDC provider and the monthly budget. Afterwards the account has no CloudFront distributions, S3 buckets, OIDC providers, budgets or CloudFormation stacks left. The GitHub repo variables `AWS_ROLE_ARN`, `S3_BUCKET` and `CLOUDFRONT_DISTRIBUTION_ID`, which only the old deploy workflow used, are deleted too.
 
+**Results:**
+- The first deploy succeeded: the site is live at https://d3um1rwtt4xdwd.cloudfront.net, served by the `ankitjk-site` stack from `infra/site.yaml`, and every merge into `main` now publishes it through `.github/workflows/deploy.yml`.
+- GitHub Pages switch: build and lint pass. `web/dist` has `index.html`, `about.html`, `projects/index.html`, the four `projects/<slug>.html` files and `404.html`, each with its own title and description. Served by a plain static server with no fallback to the app, set up to find files the way GitHub Pages does, `/`, `/about`, `/projects/` and each project page load directly, `/projects` redirects to `/projects/`, and unknown addresses get `404.html` with a 404 status and show "Page not found". In headless Chrome at 1280px and 390px, every page loads directly with one description, and clicking from home through About, Projects, a project, "Next project", "All projects" and back home works without reloading the page.
+- https://ankitjk.com loads, served by GitHub Pages with GitHub's certificate.
+
 **Minor:**
 - `DEVELOPMENT.md` - Next Up drops connecting the domain in Settings → Pages and tearing down AWS (with its repo variables), since both are done, and keeps a short reminder to tick "Enforce HTTPS".
 - `web/src/data/projects.ts`, `web/src/data/pages.ts`, `web/src/data/site.ts` - a note at the top of each says `vite.config.ts` also reads it, so it runs in Node during the build and can't import images or CSS. Review found that importing a screenshot in `projects.ts`, the obvious way to do Next Up's `imageUrl` item, now breaks both `npm run dev` and `npm run build`, where it worked before this change. `projects.ts` and the Next Up item say where screenshots go instead: a file in `web/public/` (like `web/public/projects/<slug>.webp`, stripped with `cwebp -metadata none`) set as `imageUrl: '/projects/<slug>.webp'`.
@@ -84,11 +89,6 @@ with `/log-changes` after finishing a change, before committing.
 - `README.md` - brought up to date with the site, since it still described the starter project: photos are now listed as living in `web/src/assets/photos/` (via `web/src/data/photos.ts`) rather than `web/public/`, the project write-ups in `projects.ts` are explained (`why`/`what`/`how` paragraphs, `[text](url)` links, `tags` on the card versus `tech` on the project's page), it says plainly that the site isn't online yet, and a new "Making changes" section says every change goes through a pull request only Ankit merges, pointing to CLAUDE.md for the details.
 - `web/public/robots.txt` - added, allowing search engines to read the whole site. A Lighthouse audit (all pages 100 for performance, accessibility and best practices, in light and dark mode) found it was the only failure: without the file, asking for `/robots.txt` returned the site's own page, which search engines can't read, costing the SEO score (91-92). The audit's other suggestions (smaller About photos, per-page descriptions, a softer home page fade-in) were left for later.
 - `web/src/pages/Home.module.css` - softer home page fade-in, as the Lighthouse audit suggested. The name and line used to start fully transparent, and the browser doesn't count text as shown while it's invisible, so Lighthouse scored the page's main content (the line under the name on phones, the name on desktop) as appearing only once the fade got going ("element render delay"). The entrance now starts at 40% opacity and 0.4rem low instead of invisible and 0.75rem low, and is shorter (0.5s instead of 0.7s, the links' delay 0.08s instead of 0.12s), so it still settles in gently but the content shows from the first frame. In Lighthouse on a production build, the time until the main content shows (Largest Contentful Paint) went from about 1.8s to 0.76s on phones and 0.40s to 0.21s on desktop, now the same moment as the first paint; the performance score was already 100 and stays there. Reduced-motion visitors still get no animation.
-
-**Results:**
-- The first deploy succeeded: the site is live at https://d3um1rwtt4xdwd.cloudfront.net, served by the `ankitjk-site` stack from `infra/site.yaml`, and every merge into `main` now publishes it through `.github/workflows/deploy.yml`.
-- GitHub Pages switch: build and lint pass. `web/dist` has `index.html`, `about.html`, `projects/index.html`, the four `projects/<slug>.html` files and `404.html`, each with its own title and description. Served by a plain static server with no fallback to the app, set up to find files the way GitHub Pages does, `/`, `/about`, `/projects/` and each project page load directly, `/projects` redirects to `/projects/`, and unknown addresses get `404.html` with a 404 status and show "Page not found". In headless Chrome at 1280px and 390px, every page loads directly with one description, and clicking from home through About, Projects, a project, "Next project", "All projects" and back home works without reloading the page.
-- https://ankitjk.com loads, served by GitHub Pages with GitHub's certificate.
 
 **Left open:**
 - Link previews (Open Graph tags, used when a link is shared in a message or post) and search engines that don't run JavaScript now see each page's own title and description, but not the page's content, which is still built in the browser. Previews also have no image (`og:image`) yet.
@@ -108,6 +108,9 @@ Modeled loosely on the project write-ups at rohanjk.xyz, but kept short for now:
 - GitHub ruleset "Protect main" (a repo setting, not a file) - `main` now only accepts changes through pull requests, and can't be force-pushed or deleted. No approvals are required, since GitHub doesn't let you approve your own pull request, and nobody can skip the rules: agents push with Ankit's login, so letting him skip them would let agents skip them too. Chosen over keeping direct pushes for sessions with Ankit, so there's one workflow for everyone and everything that reaches `main` (and later the live site) has been reviewed.
 - `web/public/favicon.svg`, `web/public/apple-touch-icon.png`, `web/index.html` - the browser-tab icon is now the clay dot from beside the name, replacing Vite's purple lightning bolt, which came with the starter project and was never changed. Added a 180px version (the dot on oat paper) for when the site is saved to an iPhone or iPad home screen, since those don't use SVG icons.
 
+**Results:**
+- Build and lint pass. Checked in headless Chrome in light mode at desktop and phone widths, and `/projects/nope` shows "Page not found".
+
 **Minor:**
 - `web/src/data/projects.ts` - RunItBack's "Why I built it" section written: competing in Smash, and wanting to cut down the time spent reviewing replays at quarter speed.
 - `web/src/data/projects.ts` - GenModel's "Why I built it" section written: users of Holos' Learn in 3D app had to hunt for or commission niche 3D models, so GenModel lets them generate one instead.
@@ -115,9 +118,6 @@ Modeled loosely on the project write-ups at rohanjk.xyz, but kept short for now:
 - `web/src/data/projects.ts` - this site's "Why I built it" section written: a place to share more about myself, my hobbies and my projects, not just my career like LinkedIn.
 - `web/src/data/projects.ts`, `web/src/components/ProjectCard.tsx`, `web/src/pages/Project.tsx` - project cards now show only the general areas a project covers plus its main language (for example Computer Vision, Machine Learning, Python), so someone skimming sees what kind of work it is, and the cards are shorter and more even. The full tech stack follows those tags on the project's page. Each project's tags are split into `tags` (the card) and `tech` (the rest). Cards with more on their page end with an "and more" tag, lighter and dashed so it doesn't read as another technology; Space Runner's card has none since its two tools are already shown. GenModel uses Augmented Reality rather than also adding Spatial Computing, since the two overlap and AR is the more widely recognised term and the one the About page uses.
 - `web/src/pages/Project.tsx`, `web/src/data/projects.ts` - write-up paragraphs can now include links, written `[text](url)` as in Markdown, and open in a new tab. Used to link Learn in 3D to its product page.
-
-**Results:**
-- Build and lint pass. Checked in headless Chrome in light mode at desktop and phone widths, and `/projects/nope` shows "Page not found".
 
 ### November 2, 2026 - Warm Minimalism Overhaul
 
@@ -137,6 +137,10 @@ The black-and-glass look felt cool and distant; the goal now is warm, friendly a
 - `web/public/resume.pdf`, `web/src/pages/Home.tsx` - added the resume and a "Resume ↓" link in the home page sidebar, between GitHub and Email, which downloads it as "Ankit Kulshrestha - Resume.pdf". A separate button under the name was considered but would compete with the name; as a sidebar item it's one click away and matches the other links. The About page's "View my resume" link now works too. This copy of the resume leaves out the phone number, since anything pushed to the public repo stays in its history.
 - `web/src/components/Navbar.tsx`, `web/src/components/Navbar.module.css` - theme switch added next to About and Projects. On phones the spacing tightens so the name stays on one line; at 360px and below the links and switch wrap to a second row.
 
+**Results:**
+- Build and lint pass. Checked in headless Chrome in light and dark mode at desktop and phone widths, and clicking Email still copies the address and shows "Copied".
+- Theme switch checked in headless Chrome with the system set to dark: the site starts light, the switch turns it dark, the choice survives a reload and carries to the About page, and switching back works.
+
 **Minor:**
 - `web/index.html` - page title and description use the full name.
 - `web/src/data/site.ts`, `web/src/data/projects.ts` - GitHub profile link and this site's Code link now point to the real github.com/ankitjk and the new public repo, instead of placeholders.
@@ -145,21 +149,17 @@ The black-and-glass look felt cool and distant; the goal now is warm, friendly a
 - `web/src/pages/About.tsx` - "View my resume" link now reads "View my resume!".
 - `web/src/pages/About.tsx`, `web/src/pages/Page.module.css` - the starter skills list is replaced by the resume's Technical Skills, under a "Skills and Tech Stack" heading. Skills are grouped as on the resume (Languages, Developer Tools, Libraries, Other), each group's name beside its tags, or above them on phones.
 
-**Results:**
-- Build and lint pass. Checked in headless Chrome in light and dark mode at desktop and phone widths, and clicking Email still copies the address and shows "Copied".
-- Theme switch checked in headless Chrome with the system set to dark: the site starts light, the switch turns it dark, the choice survives a reload and carries to the About page, and switching back works.
-
 ### November 2, 2026 - Clearer, More Glass-Like Button Bar
 
 **Changes:**
 - `web/src/pages/Home.module.css` - made the button bar look more transparent and glassy, closer to Apple's Liquid Glass. Over a black page there's nothing behind the glass to see through, so the effect now comes from how it catches light: a nearly clear fill with a faint sheen at the top, a 1px rim that's brightest at the top-left and bottom-right (a gradient layer with its middle masked out, since a plain border can't fade), a soft glow just inside the edge, and a crisp highlight along the top. The sliding highlight behind the selected button is built the same way, a little brighter.
 - `web/src/pages/Home.module.css` - added a fine film grain over the black background: SVG noise written inline in the CSS (no image file), tiled behind the text and buttons. The glass blurs it, so the grain looks smoothed out inside the bar, a subtle frosted effect. This replaced a blue-to-violet glow tried first, which was dropped: as a glow behind the bar the blue spread onto the page, and kept inside the bar it still wasn't wanted.
 
-**Minor:**
-- `web/src/data/site.ts` - name set to the full name, Ankit Kulshrestha (was a placeholder), so it shows in the page title, navbar and footer.
-
 **Results:**
 - Checked by driving headless Chrome: hover shows the highlight, it slides between buttons, and clicking Email swaps the label to "Copied", puts the address on the clipboard, and resets after 2 seconds.
+
+**Minor:**
+- `web/src/data/site.ts` - name set to the full name, Ankit Kulshrestha (was a placeholder), so it shows in the page title, navbar and footer.
 
 ### October 29, 2026 - Minimalist Home Page
 
